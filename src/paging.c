@@ -30,6 +30,7 @@ void *pmm_alloc(size_t n)
     for(size_t i = 0; i < (1024 * 1024) / CHAR_BIT; i++) {
         for(size_t j = 0; j < 8; j++) {
             size_t index = i * 8 + j;
+            
         }
     }
     return NULL;
