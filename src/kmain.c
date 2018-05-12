@@ -15,7 +15,7 @@ void kmain(multiboot_info_t *mboot)
     terminal_puts("[info] set up interrupts\n");
     terminal_puts("[info] allocating memory...\n");
     pmm_init();
-    if(pmm_alloc_page() != NULL) {
+    if(pmm_alloc(5) != NULL) {
         terminal_puts("allocated memory!\n");
     } else {
         terminal_puts("allocation failed!\n");

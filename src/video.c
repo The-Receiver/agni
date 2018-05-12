@@ -44,6 +44,13 @@ void terminal_drawchar(char c, uint16_t xpos, uint16_t ypos, uint32_t fg, uint32
     }
 }
 
+void terminal_scroll()
+{
+    for(size_t i = width; i < (size_t)(width * height); i++) {
+        framebuffer[i - 1] = framebuffer[i];
+    }
+}
+
 void terminal_putchar(char c)
 {
     if(c == '\n') {
@@ -55,6 +62,9 @@ void terminal_putchar(char c)
         x = 0;
         y++;
         return;
+    }
+    if(y == height / 16) {
+        terminal_scroll();
     }
     terminal_drawchar(c, x * 8, y * 16, 0xffa8a8a8, 0x00000000);
     x++;

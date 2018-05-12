@@ -7,7 +7,7 @@
 uint32_t pd[1024] __attribute__((aligned(PAGE_SIZE)));
 uint32_t pt[1024 * 1024] __attribute__((aligned(PAGE_SIZE)));
 
-uintCHAR_BIT_t bitmap[(1024 * 1024) / CHAR_BIT] __attribute__((aligned(PAGE_SIZE)));
+uint8_t bitmap[(1024 * 1024) / CHAR_BIT] __attribute__((aligned(PAGE_SIZE)));
 
 void set_up_page_tables(void)
 {
@@ -24,13 +24,12 @@ void pmm_init()
     kmemset(bitmap, 0, (1024 * 1024) / CHAR_BIT);
 }
 
-void *pmm_alloc_page()
+void *pmm_alloc(size_t n)
 {
-    for(;;) {
-        for(size_t i = 0; i < (1024 * 1024) / CHAR_BIT; i++) {
-            for(size_t j = 0; j < CHAR_BIT; j++) {
-                
-            }
+    size_t x = 0;
+    for(size_t i = 0; i < (1024 * 1024) / CHAR_BIT; i++) {
+        for(size_t j = 0; j < 8; j++) {
+            size_t index = i * 8 + j;
         }
     }
     return NULL;
