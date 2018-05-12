@@ -22,6 +22,11 @@ SECTIONS {
     {
         *(.data)             /* all data sections from all files */
     }
+    
+    .bss ALIGN (0x1000) :
+    {
+        *(.bss)
+    }
 
     base = .; _base = .; __base = .;
 }

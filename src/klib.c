@@ -1,5 +1,7 @@
 #include <klib.h>
 
+uint8_t hex_to_ascii[] = {'0', '1', '2','3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+
 size_t kstrlen(const char *s)
 {
     size_t i = 0;
@@ -53,6 +55,15 @@ void *kmemcpy(void *dest, void *src, size_t n)
     char *src_m = (char *)src;
     for(size_t i = 0; i < n; i++) {
         dest_m[i] = src_m[i];
+    }
+    return dest;
+}
+
+void *kmemset(void *dest, int c, size_t n)
+{
+    char *dest_m = (char *) dest;
+    for(size_t i = 0; i < n; i++) {
+        dest_m[i] = c;
     }
     return dest;
 }

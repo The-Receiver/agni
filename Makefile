@@ -21,6 +21,9 @@ clean:
 
 run:
 	@kvm -debugcon stdio -cdrom $(target)
+	
+bochs:
+	@bochs -q
 
 $(target): $(kernel)
 	@cp -r $(kernel) iso/boot
