@@ -1,5 +1,8 @@
 #include <klib.h>
 
+#define NORMAL 0
+#define FORMAT 1
+
 uint8_t hex_to_ascii[] = {'0', '1', '2','3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
 size_t kstrlen(const char *s)
@@ -67,3 +70,71 @@ void *kmemset(void *dest, int c, size_t n)
     }
     return dest;
 }
+
+void kputhex(uint64_t x)
+{
+    int i;
+    char buf[17] = {0};
+    
+    if(!x) {
+        terminal_puts("0x0");
+        return;
+    }
+    
+    for(i = 15; x; i--) {
+        buf[i] = hex_to_ascii[x % 16];
+        x /= 16;
+    }
+    
+    i++;
+    terminal_puts("0x");
+    terminal_puts(buf + i);
+}
+
+size_t kprintf(const char *fmt, ...)
+{
+    va_list parameters;
+    va_start(parameters, fmt);
+	
+	char str[50];
+
+    size_t i = 0;
+    uint8_t mode = NORMAL;
+
+    while(fmt[i]) {
+        switch(mode) {
+            case NORMAL:
+                switch(fmt[i]) {
+                    case '%':
+                        mode = FORMAT;
+                    break;
+                    default:
+                        terminal_putchar(fmt[i]);
+                    break;
+                }
+            break;
+            case FORMAT:
+                switch(fmt[i]) {
+                    case 'c':
+                        terminal_putchar(va_arg(parameters, int));
+                    break;
+                    case 's':
+                        terminal_puts(va_arg(parameters, char *));
+                    break;
+                    case 'x':
+                        kputhex(va_arg(parameters, uint32_t));
+                    break;
+                    default:
+                        mode = NORMAL;
+                    break;
+                }
+            break;
+        }
+        i++;
+    }
+    
+    va_end(parameters);
+    return i;
+} 
+
+
