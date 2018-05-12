@@ -91,6 +91,16 @@ void kputhex(uint64_t x)
     terminal_puts(buf + i);
 }
 
+void kputchar(char c)
+{
+    terminal_putchar(c);
+}
+
+void kputs(char *s)
+{
+    terminal_puts(s);
+}
+
 size_t kprintf(const char *fmt, ...)
 {
     va_list parameters;
@@ -116,10 +126,10 @@ size_t kprintf(const char *fmt, ...)
             case FORMAT:
                 switch(fmt[i]) {
                     case 'c':
-                        terminal_putchar(va_arg(parameters, int));
+                        kputchar(va_arg(parameters, int));
                     break;
                     case 's':
-                        terminal_puts(va_arg(parameters, char *));
+                        kputs(va_arg(parameters, char *));
                     break;
                     case 'x':
                         kputhex(va_arg(parameters, uint32_t));

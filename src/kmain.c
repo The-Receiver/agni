@@ -13,9 +13,17 @@ void kmain(multiboot_info_t *mboot)
     terminal_puts("[info] activated identity paging\n");
     idt_init();
     terminal_puts("[info] set up interrupts\n");
-    terminal_puts("[info] allocating memory...\n");
     pmm_init();
-    for(size_t i = 0; i < 80; i++) {
-        kprintf("[info] allocated memory at address %x \n", (uintptr_t)pmm_alloc_page());
+    terminal_puts("[info] allocating memory...\n");;
+    char *buf = pmm_alloc_page();
+    if(buf != NULL) {
+        kprintf("[info] memory allocated at address %x ! \n", (uintptr_t)buf);
+        kputs("[info] copying Safal's keyboard mashing to buffer\n");
+        kmemcpy(buf, "eorkeporjpeojrpejrepreporjeporjoerjoe", kstrlen("eorkeporjpeojrpejrepreporjeporjoerjoe"));
+        kputs("[info] memory contains \"");
+        kputs(buf);
+        kputs("\"\n");
+        
     }
+    
 }

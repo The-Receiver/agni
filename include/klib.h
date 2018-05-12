@@ -4,6 +4,8 @@
 #include <stdarg.h>
 #include <terminal.h>
 
+void kputs(char *);
+void kputchar(char);
 size_t kstrlen(const char *);
 size_t kprintf(const char *, ...);
 char *kstrchr(char *, char);
