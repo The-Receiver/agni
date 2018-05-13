@@ -19,10 +19,10 @@ clean:
 	@rm -rf obj/*.o
 	@rm -rf bin/*.elf
 
-run:
-	@kvm -debugcon stdio -cdrom $(target)
+run: all
+	@kvm -m 4G -debugcon stdio -cdrom $(target)
 	
-bochs:
+bochs: all
 	@bochs -q
 
 $(target): $(kernel)
@@ -30,10 +30,10 @@ $(target): $(kernel)
 	@grub-mkrescue iso -o $(target)
 	
 $(kernel): $(c_object_files) $(asm_object_files)
-	@i386-elf-gcc -nostdlib -Tlinker.ld -nostartfiles $(c_object_files) $(asm_object_files) -o $(kernel) -lgcc
+	@i386-elf-gcc -fPIC -nostdlib -Tlinker.ld -nostartfiles $(c_object_files) $(asm_object_files) -o $(kernel) -lgcc
 
 obj/%.o: asm/%.asm
 	@nasm -felf32 -D$(res) $^ -o $@
 
 obj/%.o: src/%.c
-	@i386-elf-gcc -masm=intel -I./include -c -nostdlib -fno-builtin -O0 -ffreestanding $^ -o $@
+	@i386-elf-gcc -fPIC -masm=intel -I./include -c -nostdlib -fno-builtin -O0 -ffreestanding $^ -o $@

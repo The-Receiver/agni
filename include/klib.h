@@ -6,6 +6,7 @@
 
 void kputs(char *);
 void kputchar(char);
+void kdelay(uint64_t);
 size_t kstrlen(const char *);
 size_t kprintf(const char *, ...);
 char *kstrchr(char *, char);
@@ -21,7 +22,6 @@ typedef struct {
     uint32_t int_no, err_code;
     uint32_t eip, cs, eflags, useresp, ss;
 } regs_t;
-
 
 static inline void outb(uint16_t port, uint8_t val)
 {

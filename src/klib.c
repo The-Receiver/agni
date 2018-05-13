@@ -1,3 +1,4 @@
+#include <pit.h>
 #include <klib.h>
 
 #define NORMAL 0
@@ -99,6 +100,12 @@ void kputchar(char c)
 void kputs(char *s)
 {
     terminal_puts(s);
+}
+
+void kdelay(uint64_t secs)
+{
+    uint64_t initial = pit_secs();
+    while((pit_secs() - initial) != secs);
 }
 
 size_t kprintf(const char *fmt, ...)

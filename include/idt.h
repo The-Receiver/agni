@@ -20,6 +20,8 @@ typedef struct {
 
 void irq_init();
 void idt_init();
+void irq_uninstall_handler(int);
+void irq_install_handler(int, void (*)(regs_t *));
 void idt_set_gate(uint8_t, uint32_t, uint16_t, uint8_t);
 
 #endif
