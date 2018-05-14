@@ -3,7 +3,6 @@
 #include <klib.h>
 #include <video.h>
 #include <paging.h>
-#include <terminal.h>
 
 void kmain(multiboot_info_t *mboot)
 {
@@ -19,7 +18,7 @@ void kmain(multiboot_info_t *mboot)
     kputs("[boot] activated interrupts\n");
     pmm_init();
     kputs("[boot] allocating memory...\n");;
-    char *buf = pmm_alloc(1000);    /* allocate 1000 pages (40 MiB) as a test */
+    char *buf = pmm_alloc(100);    /* allocate 100 pages (400 KiB) as a test */
     if(buf != NULL) {
         kprintf("[boot] memory allocated at address %x \n", (uintptr_t)buf);
         kputs("[boot] copying data to the address...\n");
@@ -27,7 +26,7 @@ void kmain(multiboot_info_t *mboot)
         kputs("[boot] memory contains \"");
         kputs(buf);
         kputs("\"\n");
-        pmm_free(buf, 1000); /* free the allocated memory */
+        pmm_free(buf, 100); /* free the allocated memory */
     } else {
         kputs("[boot] allocating memory failed\n");
     }
