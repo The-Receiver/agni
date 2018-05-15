@@ -14,14 +14,9 @@ void set_up_page_tables(void)
     uint32_t *pt_pa = (uint32_t *)((char *)pt - HIGHER_HALF_ADDRESS + LOAD_ADDRESS);
     uint32_t *pd_pa = (uint32_t *)((char *)pd - HIGHER_HALF_ADDRESS + LOAD_ADDRESS);
     
-    
     for(size_t i = 0; i < 1024; i++) {
         pt_pa[i] = (i * PAGE_SIZE) | 0x03;
     }
-    for(size_t i = 1024; i < 1024 * 1024; i++) {
-        pt_pa[i] = (i * PAGE_SIZE) | 0x03;
-    }
-    for(size_t i = 0; i < 1024; i++) {
-        pd_pa[i] = (uint32_t) (&pt_pa[i * 1024]) | 0x03;
-    }
+    pd_pa[0] = (uint32_t) (pt_pa) | 0x03;
+    pd_pa[768] = (uint32_t) (pt_pa) | 0x03;
 }

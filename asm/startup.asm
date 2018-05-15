@@ -46,7 +46,6 @@ start:
     mov ss, ax
     mov esp, stack_top - HIGHER_HALF_ADDRESS + LOAD_ADDRESS
     
-    
     call set_up_page_tables
     call paging_init
     
