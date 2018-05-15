@@ -18,7 +18,7 @@ void set_up_page_tables(void)
     for(size_t i = 0; i < 1024; i++) {
         pt_pa[i] = (i * PAGE_SIZE) | 0x03;
     }
-    for(size_t i = 0; i < 1024 * 1024; i++) {
+    for(size_t i = 1024; i < 1024 * 1024; i++) {
         pt_pa[i] = (i * PAGE_SIZE) | 0x03;
     }
     for(size_t i = 0; i < 1024; i++) {
