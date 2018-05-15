@@ -1,6 +1,11 @@
 bits 32
 global start
 extern kmain
+extern paging_init
+extern set_up_page_tables
+
+%define LOAD_ADDRESS 0x00100000
+%define HIGHER_HALF_ADDRESS 0xC0100000
 
 section .bss
 stack_bottom:
@@ -26,12 +31,12 @@ gdt32:
     db 0
 .pointer:
     dw $ - gdt32 - 1
-    dd gdt32
+    dd gdt32 - HIGHER_HALF_ADDRESS + LOAD_ADDRESS
 
 section .text
 start:
-    lgdt[gdt32.pointer]
-    jmp 0x08:.kernel
+    lgdt[gdt32.pointer - HIGHER_HALF_ADDRESS + LOAD_ADDRESS]
+    jmp 0x08:(.kernel - HIGHER_HALF_ADDRESS + LOAD_ADDRESS)
 .kernel:
     mov ax, 0x10
     mov ds, ax
@@ -39,11 +44,17 @@ start:
     mov fs, ax
     mov gs, ax
     mov ss, ax
-    mov esp, stack_top
+    mov esp, stack_top - HIGHER_HALF_ADDRESS + LOAD_ADDRESS
     
-    mov byte [0xb800], 'a'
-    mov byte [0xb8001], 0x0f
     
+    call set_up_page_tables
+    call paging_init
+    
+    jmp 0x08:.higher_half
+    
+ .higher_half:   
+    sub ebx, HIGHER_HALF_ADDRESS
+    add ebx, LOAD_ADDRESS
     push ebx
     call kmain
     
