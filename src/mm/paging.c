@@ -3,8 +3,6 @@
 #include <limits.h>
 
 #define PAGE_SIZE 0x1000
-#define LOAD_ADDRESS 0x00100000
-#define HIGHER_HALF_ADDRESS 0xC0100000
 
 uint32_t pd[1024] __attribute__((aligned(PAGE_SIZE)));
 uint32_t pt[1024 * 1024] __attribute__((aligned(PAGE_SIZE)));;

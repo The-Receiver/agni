@@ -11,6 +11,8 @@ void pit_init(void)
 
 void pit_handler(regs_t *r)
 {
+    int n = r->int_no;
+    n += 5;
     ticks++;
     if((ticks % 18) == 0) {
         seconds++;

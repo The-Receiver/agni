@@ -12,11 +12,6 @@ void pmm_init()
     }
     
     bitmap[0] = 1;
-    
-    for(size_t i = 0; i < (1024 * 1024) / CHAR_BIT; i++) {
-        kprintf("%x  ", bitmap[i]);
-        kdelay(1);
-    }
 }
 
 void *pmm_alloc_page()

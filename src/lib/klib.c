@@ -22,7 +22,7 @@ char* kstrchr(char *s, char c)
 char *kstrrchr(char *s, char c)
 {
     char *ptr = s + kstrlen(s);
-    for(; *ptr; ptr--);
+    for(; *ptr != c; ptr--);
     return ptr;
 }
 
@@ -40,6 +40,7 @@ char *kstrstr(char *haystack, char *needle)
                 if(j == needle_len) return haystack;
             }
         }
+        
     }
     return NULL;
 }

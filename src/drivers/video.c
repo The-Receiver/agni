@@ -25,8 +25,6 @@ void video_init()
     height = 25;
 }
 
-
-
 void terminal_drawchar(char c, uint8_t xpos, uint8_t ypos, uint8_t colour)
 {
     size_t index = ypos * width + xpos;
