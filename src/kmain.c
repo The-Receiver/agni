@@ -1,4 +1,5 @@
 #include <pmm.h>
+#include <vmm.h>
 #include <idt.h>
 #include <klib.h>
 #include <video.h>
@@ -11,6 +12,8 @@ void kmain(multiboot_info_t *mboot)
     pmm_init();
     kputs("agni version 0.0.1\n");
     kputs("starting boot...\n");
+    kprintf("lower memory start: %x \n", mboot->mem_lower);
+    kprintf("upper memory start: %x \n", mboot->mem_upper);
     kputs("[boot] interrupts initialized; testing the timer...");
     kdelay(3);
     kputs(" working!\n");
@@ -20,10 +23,10 @@ void kmain(multiboot_info_t *mboot)
     if((ptr != NULL) && (ptr2 != NULL)) {
         kprintf("[boot] first buffer allocated at address %x \n", (uintptr_t)ptr);
         kmemcpy(ptr, "dsdsdsdsds", kstrlen("dsdsdsdsds"));
-        kprintf("[boot] the address contains %s \n", ptr);
+        kprintf("[boot] the buffer contains %s \n", ptr);
         kprintf("[boot] second buffer alloacted at address %x \n", (uintptr_t)ptr2);
         kmemcpy(ptr2, "jkdfpodjo", kstrlen("jkdfpodjo"));
-        kprintf("[boot] the address contains %s \n", ptr2);
+        kprintf("[boot] the buffer contains %s \n", ptr2);
     } else {
         kputs("[boot] failed to allocate memory\n");
     }

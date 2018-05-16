@@ -1,7 +1,11 @@
 #include <vmm.h>
 
-void *vmm_alloc(size_t n)
+void *vmm_alloc_page()
 {
-    n += 4096;
     return pmm_alloc_page();
+}
+
+void vmm_free_page(void *ptr)
+{
+    pmm_free_page(ptr);
 }

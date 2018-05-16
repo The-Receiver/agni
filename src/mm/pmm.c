@@ -19,8 +19,7 @@ void *pmm_alloc_page()
 {
     for(size_t i = 0; i < (1024 * 1024) / CHAR_BIT; i++) {
         for(size_t j = 0; j < CHAR_BIT; j++) {
-            uint8_t bit = (bitmap[i] >> j) & 1;
-            if(!bit) {
+            if(!((bitmap[i] >> j) & 1)) {
                 bitmap[i] |= (1 << j);
                 return (void *)(KRNL_BASE+((i*8)+j)*PAGE_SIZE);
             }

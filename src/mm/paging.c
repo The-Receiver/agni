@@ -4,13 +4,13 @@
 
 #define PAGE_SIZE 0x1000
 
-uint32_t pd[1024] __attribute__((aligned(PAGE_SIZE)));
-uint32_t pt[1024 * 1024] __attribute__((aligned(PAGE_SIZE)));;
+uintptr_t pd[1024] __attribute__((aligned(PAGE_SIZE)));
+uintptr_t pt[1024 * 1024] __attribute__((aligned(PAGE_SIZE)));;
 
 void set_up_page_tables(void)
 {
-    uint32_t *pt_pa = (uint32_t *)((char *)pt - HIGHER_HALF_ADDRESS + LOAD_ADDRESS);
-    uint32_t *pd_pa = (uint32_t *)((char *)pd - HIGHER_HALF_ADDRESS + LOAD_ADDRESS);
+    uintptr_t *pt_pa = (uintptr_t *)((char *)pt - HIGHER_HALF_ADDRESS + LOAD_ADDRESS);
+    uintptr_t *pd_pa = (uintptr_t *)((char *)pd - HIGHER_HALF_ADDRESS + LOAD_ADDRESS);
     
     for(size_t i = 0; i < 1024 * 1024; i++) {
         pt_pa[i] = (i * PAGE_SIZE) | 0x03;

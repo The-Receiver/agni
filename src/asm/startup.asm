@@ -52,8 +52,8 @@ start:
     jmp 0x08:.higher_half
     
  .higher_half:
-    sub ebx, HIGHER_HALF_ADDRESS
-    add ebx, LOAD_ADDRESS
+    ;sub ebx, HIGHER_HALF_ADDRESS
+    ;add ebx, LOAD_ADDRESS
     push ebx
     call kmain
     

@@ -14,7 +14,7 @@ clean:
 	@rm -rf bin/*.elf
 
 run: all
-	@kvm -debugcon stdio -m 4G -cdrom $(target)
+	@kvm -monitor stdio -m 512M -cdrom $(target)
 	
 bochs: all
 	@bochs -q
@@ -30,4 +30,4 @@ $(kernel): $(c_object_files) $(asm_object_files)
 	@nasm -Fdwarf -felf32 $(@:.o=.asm) -o $@
 
 %.o: %.c
-	@i386-elf-gcc -g -Wall -Werror -masm=intel -I./include -c -nostdlib -fno-builtin -O0 -ffreestanding $(@:.o=.c) -o $@
+	@i386-elf-gcc -g -Wall -Wextra -Werror -masm=intel -I./include -c -nostdlib -fno-builtin -O0 -ffreestanding $(@:.o=.c) -o $@
