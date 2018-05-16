@@ -2,62 +2,48 @@
 #include <terminal.h>
 
 uint8_t bpp;
-uint32_t *framebuffer;
+uint16_t *framebuffer;
 uint16_t width, height, pitch;
 static size_t x = 0, y = 0;
 extern uint8_t bitmap_font[16 * 256];
 
-void video_init(multiboot_info_t *mboot)
+static inline uint8_t vga_entry_colour(colour_t fg, colour_t bg) 
 {
-    vbe_mode_t *vbe = (vbe_mode_t *)mboot->vbe_mode_info;
-    bpp = vbe->bpp;
-    width = vbe->width;
-    height = vbe->height;
-    pitch = vbe->pitch;
-    uintptr_t framebuffer_ptr = (uintptr_t)vbe->framebuffer;
-    framebuffer = (uint32_t *)framebuffer_ptr;
-    
-    for(size_t i = 0; i < width * height; i++) {
-        framebuffer[i] = 0x00000000;
-    }
+	return fg | bg << 4;
+}
+ 
+static inline uint16_t vga_entry(uint8_t uc, uint8_t colour) 
+{
+	return (uint16_t) uc | (uint16_t) colour << 8;
 }
 
-void video_putpixel(uint16_t xpos, uint16_t ypos, uint32_t colour)
+
+void video_init()
 {
-    framebuffer[ypos * (pitch / 4) + xpos] = colour;
+    framebuffer = (uint16_t *) 0xb8000;
+    width = 80;
+    height = 25;
 }
 
-void terminal_drawchar(char c, uint16_t xpos, uint16_t ypos, uint32_t fg, uint32_t bg)
-{
-    uint16_t orig_x = xpos;
-    
-    for(uint8_t i = 0; i < 16; i++) {
-        for(uint8_t j = 0; j < 8; j++) {
-            if((bitmap_font[c * 16 + i] >> (7 - j)) & 1) {
-                video_putpixel(xpos++, ypos, fg);
-            } else {
-                video_putpixel(xpos++, ypos, bg);
-            }
-        }
-        ypos++;
-        xpos = orig_x;
-    }
-}
 
+
+void terminal_drawchar(char c, uint8_t xpos, uint8_t ypos, uint8_t colour)
+{
+    size_t index = ypos * width + xpos;
+    framebuffer[index] = vga_entry(c, colour);
+}
 
 void terminal_putchar(char c)
 {
+    if(!c) {
+        return;
+    }
     if(c == '\n') {
         x = 0;
         y++;
         return;
     }
-    if(x == width / 8) {
-        x = 0;
-        y++;
-        return;
-    }
-    terminal_drawchar(c, x * 8, y * 16, 0xffa8a8a8, 0x00000000);
+    terminal_drawchar(c, x, y, vga_entry_colour(LGREY, BLACK));
     x++;
 }
 

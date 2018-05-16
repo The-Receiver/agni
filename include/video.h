@@ -44,7 +44,7 @@ typedef struct vbe_mode_t
     uint8_t reserved1[206];
 }__attribute__((packed)) vbe_mode_t;
 
-void video_init(multiboot_info_t *);
+void video_init();
 void video_putpixel(uint16_t, uint16_t, uint32_t);
 
 #endif

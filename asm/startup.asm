@@ -12,7 +12,7 @@ stack_bottom:
     resb 4096
 stack_top:
 
-section .data
+section .rodata
 gdt32:
 .null: dq 0
 .code:
@@ -51,7 +51,7 @@ start:
     
     jmp 0x08:.higher_half
     
- .higher_half:   
+ .higher_half:
     sub ebx, HIGHER_HALF_ADDRESS
     add ebx, LOAD_ADDRESS
     push ebx

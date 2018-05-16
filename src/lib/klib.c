@@ -41,6 +41,7 @@ char *kstrstr(char *haystack, char *needle)
             }
         }
     }
+    return NULL;
 }
 
 size_t kstrcmp(char *a, char *b)
@@ -113,8 +114,6 @@ size_t kprintf(const char *fmt, ...)
     va_list parameters;
     va_start(parameters, fmt);
 	
-	char str[50];
-
     size_t i = 0;
     uint8_t mode = NORMAL;
 

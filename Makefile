@@ -1,10 +1,6 @@
 target ?= bin/agni.iso
 kernel ?= bin/shakti.elf
 
-ifeq ($(res),)
-	res := RES_800_600
-endif
-
 c_source_files := $(shell find src -name '*.c')
 asm_source_files := $(shell find asm -name '*.asm')
 
@@ -18,7 +14,7 @@ clean:
 	@rm -rf bin/*.elf
 
 run: all
-	@kvm -m 4G -debugcon stdio -cdrom $(target)
+	@kvm -debugcon stdio -m 4G -cdrom $(target)
 	
 bochs: all
 	@bochs -q
@@ -28,10 +24,10 @@ $(target): $(kernel)
 	@grub-mkrescue iso -o $(target)
 	
 $(kernel): $(c_object_files) $(asm_object_files)
-	@i386-elf-gcc -Wall -Wextra -Werror -fPIC -nostdlib -Tlinker.ld -nostartfiles $(c_object_files) $(asm_object_files) -o $(kernel) -lgcc
+	@i386-elf-gcc -g -Wall -Wextra -Werror -fPIC -nostdlib -Tlinker.ld -nostartfiles $(c_object_files) $(asm_object_files) -o $(kernel) -lgcc
 
 %.o: %.asm
-	@nasm -felf32 -D$(res) $(@:.o=.asm) -o $@
+	@nasm -Fdwarf -felf32 $(@:.o=.asm) -o $@
 
 %.o: %.c
-	@i386-elf-gcc -fPIC -masm=intel -I./include -c -nostdlib -fno-builtin -O0 -ffreestanding $(@:.o=.c) -o $@
+	@i386-elf-gcc -g -Wall -Werror -fPIC -masm=intel -I./include -c -nostdlib -fno-builtin -O0 -ffreestanding $(@:.o=.c) -o $@
