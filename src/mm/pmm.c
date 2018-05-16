@@ -3,35 +3,36 @@
 
 #define PAGE_SIZE 0x1000
 
-uint8_t bitmap[(1024 * 512) / CHAR_BIT] __attribute__((aligned(PAGE_SIZE)));
-
-static uint8_t check_continuity(void **addresses, size_t naddresses)
-{
-    size_t x = 0;
-    for(size_t i = 0; i < naddresses - 1; i++) {
-        if((addresses[i + 1] - addresses[i]) != PAGE_SIZE) x++;
-    }
-    return (x == 0);
-}
+volatile uint8_t bitmap[(1024 * 1024) / CHAR_BIT] __attribute__((aligned(PAGE_SIZE)));
 
 void pmm_init()
 {
-    kmemset(bitmap, 0, (1024 * 512) / CHAR_BIT);
+    for(size_t i = 0; i < (1024 * 1024) / CHAR_BIT; i++) {
+        bitmap[i] = 0;
+    }
+    
     bitmap[0] = 1;
+    
+    for(size_t i = 0; i < (1024 * 1024) / CHAR_BIT; i++) {
+        kprintf("%x  ", bitmap[i]);
+        kdelay(1);
+    }
 }
 
 void *pmm_alloc_page()
 {
     for(size_t i = 0; i < (1024 * 1024) / CHAR_BIT; i++) {
         for(size_t j = 0; j < CHAR_BIT; j++) {
-            size_t index = i * CHAR_BIT + j;
             uint8_t bit = (bitmap[i] >> j) & 1;
             if(!bit) {
                 bitmap[i] |= (1 << j);
-                return (void *)((index * PAGE_SIZE));
+                kprintf("i: %x, j: %x \n", i, j);
+                return (void *)(((i*8)+j)*PAGE_SIZE);
             }
+            kprintf("%x\n", bitmap[i]);
         }
     }
+    kputs("Sad!\n");
     return NULL;
 }
 
@@ -45,39 +46,5 @@ void pmm_free_page(void *addr)
                 return;
             }
         }
-    }
-}
-
-void *pmm_alloc(size_t n)
-{
-    uint8_t first = 1;
-    void *addresses[n];
-    void *old_addresses[n];
-    for(;;) {
-        if(first) {
-            for(size_t i = 0; i < n; i++) {
-                addresses[i] = pmm_alloc_page();
-                if(addresses[i] == NULL) return NULL;
-            }
-            first = 0;
-        }
-        if(check_continuity(addresses, n)) return addresses[0];
-        else {
-            kmemcpy(old_addresses, addresses, n * sizeof(void *));
-            for(size_t i = 0; i < n; i++) {
-                addresses[i] = pmm_alloc_page();
-                if(addresses[i] == NULL) return NULL;
-            }
-            for(size_t i = 0; i < n; i++) {
-                pmm_free_page(old_addresses[i]);
-            }
-        }
-    }
-}
-
-void pmm_free(void *addr, size_t n)
-{
-    for(size_t i = 0; i < n; i++) {
-        pmm_free_page(addr + (i * sizeof(void *)));
     }
 }

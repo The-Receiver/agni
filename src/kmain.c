@@ -6,12 +6,11 @@
 
 void kmain(multiboot_info_t *mboot)
 {
+    idt_init();
     video_init();
     pmm_init();
     kputs("agni version 0.0.1\n");
     kputs("starting boot...\n");
-    kputs("[boot] initializing interrupts...\n");
-    idt_init();
     kputs("[boot] interrupts initialized; testing the timer...");
     kdelay(5);
     kputs(" working!\n");
