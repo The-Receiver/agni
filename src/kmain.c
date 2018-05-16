@@ -23,7 +23,7 @@ void kmain(multiboot_info_t *mboot)
         kprintf("[boot] the address contains %s \n", ptr);
         kprintf("[boot] second buffer alloacted at address %x \n", (uintptr_t)ptr2);
         kmemcpy(ptr2, "jkdfpodjo", kstrlen("jkdfpodjo"));
-        kprintf("[boot] the address contians %s \n", ptr2);
+        kprintf("[boot] the address contains %s \n", ptr2);
     } else {
         kputs("[boot] failed to allocate memory\n");
     }
