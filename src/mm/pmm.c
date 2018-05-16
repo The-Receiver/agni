@@ -2,6 +2,7 @@
 #include <klib.h>
 
 #define PAGE_SIZE 0x1000
+#define KRNL_BASE 0x10000000
 
 volatile uint8_t bitmap[(1024 * 1024) / CHAR_BIT] __attribute__((aligned(PAGE_SIZE)));
 
@@ -21,13 +22,10 @@ void *pmm_alloc_page()
             uint8_t bit = (bitmap[i] >> j) & 1;
             if(!bit) {
                 bitmap[i] |= (1 << j);
-                kprintf("i: %x, j: %x \n", i, j);
-                return (void *)(((i*8)+j)*PAGE_SIZE);
+                return (void *)(KRNL_BASE+((i*8)+j)*PAGE_SIZE);
             }
-            kprintf("%x\n", bitmap[i]);
         }
     }
-    kputs("Sad!\n");
     return NULL;
 }
 

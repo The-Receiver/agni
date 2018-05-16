@@ -19,7 +19,7 @@ void set_up_page_tables(void)
     for(size_t i = 0; i < 1024; i++) {
         pd_pa[i] = (uintptr_t)&pt_pa[i * 1024] | 0x03;
     }
-    
-    pd_pa[0] = (uintptr_t) (pt_pa) | 0x03;
-    pd_pa[768] = (uintptr_t) (pt_pa) | 0x03;
+
+    for (size_t i = 0; i < 4; i++)
+        pd_pa[768 + i] = (uintptr_t) (&pt_pa[i * 1024]) | 0x03;
 }

@@ -12,13 +12,13 @@ void kmain(multiboot_info_t *mboot)
     kputs("agni version 0.0.1\n");
     kputs("starting boot...\n");
     kputs("[boot] interrupts initialized; testing the timer...");
-    kdelay(5);
+    kdelay(3);
     kputs(" working!\n");
     kputs("[boot] testing physical memory manager...\n");
     void *ptr = pmm_alloc_page();
     void *ptr2 = pmm_alloc_page();
     if((ptr != NULL) && (ptr2 != NULL)) {
-        kprintf("[boot] first buffer alloacated at address %x \n", (uintptr_t)ptr);
+        kprintf("[boot] first buffer allocated at address %x \n", (uintptr_t)ptr);
         kmemcpy(ptr, "dsdsdsdsds", kstrlen("dsdsdsdsds"));
         kprintf("[boot] the address contains %s \n", ptr);
         kprintf("[boot] second buffer alloacted at address %x \n", (uintptr_t)ptr2);
