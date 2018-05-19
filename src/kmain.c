@@ -22,19 +22,6 @@ void kmain(multiboot_info_t *mboot)
     kputs("[boot] interrupts initialized; testing the timer...");
     kdelay(3);
     kputs(" working!\n");
-    void *buf = pmm_alloc_page();
-    void *buf2 = pmm_alloc_page();
-    kputs("[boot] testing memory alloaction...\n");
-    if((buf != NULL) && (buf2 != NULL)) {
-        kprintf("[boot] first buffer allocated at %x \n", (uintptr_t)buf);
-        kmemcpy(buf, "Safal", 6);
-        kprintf("[boot] first buffer contains \"%s \"\n", buf);
-        kprintf("[boot] second buffer alloacted at %x \n", (uintptr_t)buf2);
-        kmemcpy(buf2, "Somil", 6);
-        kprintf("[boot] second buffer contains \"%s \"\n", buf2);
-    } else {
-        kprintf("[boot] memory alloaction failed!\n");
-    }
     kputs("[boot] loading initrd...\n");
     if(mboot->mods_count > 1) {
         kputs("[boot] FATAL: more than one module\n");
@@ -51,7 +38,7 @@ void kmain(multiboot_info_t *mboot)
     if((f = tar_open("hello.c")) != NULL) {
         kputs("[boot] file hello.c found!\n");
         char *file = pmm_alloc_page();
-        tar_read(file, f, 86);
+        tar_read(file, f, 87);
         kprintf("[boot] file hello.c contains: \n %s \n", file);
     } else {
         kputs("[boot] opening test file failed\n");

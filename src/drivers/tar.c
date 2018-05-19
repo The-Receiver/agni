@@ -19,12 +19,12 @@ void tar_mount(uint32_t *buf)
 {
     tar_buffer = buf;
     for(size_t i = 0; ; i++) {
-        char *str = (char *)(*buf);
-        if(str[0] == '\0') {
+        tarhdr_t *hdr = (tarhdr_t *) *buf;
+        if(hdr->filename[0] == '\0') {
             archive_size = i;
             return;
         }
-        uint32_t size = octal_atoi((char *)(*buf + 124));
+        uint32_t size = octal_atoi(hdr->size);
         
         buf += size + 512;
         
