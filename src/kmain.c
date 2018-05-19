@@ -43,9 +43,19 @@ void kmain(multiboot_info_t *mboot)
         kputs("[boot] FATAL: no modules loaded!\n");
         asm volatile("hlt");
     }
-    kprintf("[boot] initrd located at address %x \n", mboot->mods_addr);
-    kprintf("[boot] first file is %s \n", *((uint32_t *)mboot->mods_addr));
-    kprintf("[boot] first file contains:\n %s", *((uint32_t *)mboot->mods_addr) + 512);
+    uint32_t *initrd_ptr = (uint32_t *) mboot->mods_addr;
+    kprintf("[boot] initrd located at address %x \n", initrd_ptr);
+    tar_mount(initrd_ptr);
+    tarFILE *f;
+    kputs("[boot] testing initrd driver by opening file \"hello.c\"...\n");
+    if((f = tar_open("hello.c")) != NULL) {
+        kputs("[boot] file hello.c found!\n");
+        char *file = pmm_alloc_page();
+        tar_read(file, f, 86);
+        kprintf("[boot] file hello.c contains: \n %s \n", file);
+    } else {
+        kputs("[boot] opening test file failed\n");
+    }
 
     asm volatile("hlt");
 }

@@ -12,9 +12,18 @@ typedef struct {
     char size[12];
     char time[12];
     char checksum[8];
-    uint8_t link;
-} tarhdr_t;
+    char typeflag;
+} __attribute__((packed))tarhdr_t;
 
-void tar_init(tarhdr_t **, void *);
+
+typedef struct {
+    size_t size;
+    void *offset;
+    uint32_t *archive_offset;
+} tarFILE;
+
+void tar_mount(uint32_t *);
+tarFILE *tar_open(char *);
+void tar_read(void *, tarFILE *, size_t);
 
 #endif

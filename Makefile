@@ -24,7 +24,7 @@ $(target): $(kernel)
 	@grub-mkrescue iso -o $(target)
 	
 $(kernel): $(c_object_files) $(asm_object_files)
-	@i386-elf-gcc -m32 -g -Wall -Wextra -Werror -nostdlib -Tlinker.ld -nostartfiles $(c_object_files) $(asm_object_files) -o $(kernel) -lgcc
+	@i386-elf-gcc -m32 -g -Wall -Wextra -Werror -masm=intel -nostdlib -Tlinker.ld -nostartfiles $(c_object_files) $(asm_object_files) -o $(kernel) -lgcc
 	
 install:
 	@sudo dd if=bin/agni.iso of=/dev/sdb
@@ -33,4 +33,4 @@ install:
 	@nasm -Fdwarf -felf32 $(@:.o=.asm) -o $@
 
 %.o: %.c
-	@i386-elf-gcc -g -Wall -Wextra -Werror -masm=intel -I./include -c -nostdlib -fno-builtin -O0 -ffreestanding $(@:.o=.c) -o $@
+	@i386-elf-gcc -g -Wall -Wextra -masm=intel -I./include -c -nostdlib -fno-builtin -O0 -ffreestanding $(@:.o=.c) -o $@

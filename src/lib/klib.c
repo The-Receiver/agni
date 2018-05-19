@@ -45,14 +45,9 @@ char *kstrstr(char *haystack, char *needle)
     return NULL;
 }
 
-size_t kstrcmp(char *a, char *b)
+int kstrcmp(char *a, char *b)
 {
-    size_t same;
-    size_t l1 = kstrlen(a);
-    for(size_t i = 0; i < l1; i++) {
-        if(b[i] != a[i]) same++;
-    }
-    return same;
+    return *(const unsigned char*)a-*(const unsigned char*)b;
 }
 
 void *kmemcpy(void *dest, void *src, size_t n)
