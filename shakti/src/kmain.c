@@ -34,12 +34,13 @@ void kmain(multiboot_info_t *mboot)
     kprintf("[boot] initrd located at address %x \n", initrd_ptr);
     tar_mount(initrd_ptr);
     tarFILE *f;
-    kputs("[boot] testing initrd driver by opening file \"hello.c\"...\n");
-    if((f = tar_open("hello.c")) != NULL) {
-        kputs("[boot] file hello.c found!\n");
+    if((f = tar_open("welcome")) != NULL) {
+        kputs("[boot] displaying contents of file \"welcome\"\n");
         char *file = pmm_alloc_page();
-        tar_read(file, f, 87);
-        kprintf("[boot] file hello.c contains: \n %s \n", file);
+        tar_read(file, f, 17);
+        kprintf("\n %s \n", file);
+        tar_close(f);
+        pmm_free_page(file);
     } else {
         kputs("[boot] opening test file failed\n");
     }

@@ -24,6 +24,7 @@ typedef struct {
 
 void tar_mount(uint32_t *);
 tarFILE *tar_open(char *);
+void tar_close(tarFILE *);
 void tar_read(void *, tarFILE *, size_t);
 
 #endif

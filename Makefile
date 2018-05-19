@@ -1,36 +1,21 @@
-target ?= bin/agni.iso
 kernel ?= bin/shakti.elf
+initrd ?= iso/boot/initrd.tar
+target ?= bin/agni.iso
 
-c_source_files := $(shell find src -name '*.c')
-asm_source_files := $(shell find src/asm -name '*.asm')
+all: $(target)
 
-c_object_files := $(c_source_files:.c=.o)
-asm_object_files := $(asm_source_files:.asm=.o)
-
-all: $(target) clean
-
-clean:
-	@rm -rf $(c_object_files) $(asm_object_files)
-	@rm -rf bin/*.elf
+remove_old_initrd:
+	@rm -rf iso/boot/initrd.tar
 
 run: all
-	@kvm -monitor stdio -m 512M -cdrom $(target)
-	
-bochs: all
-	@bochs -q
+	@qemu-system-i386 -m 4G -monitor stdio bin/agni.iso
 
-$(target): $(kernel)
-	@cp -r $(kernel) iso/boot
+$(target): $(kernel) $(initrd)
+	@mv -f $(kernel) iso/boot
 	@grub-mkrescue iso -o $(target)
-	
-$(kernel): $(c_object_files) $(asm_object_files)
-	@i386-elf-gcc -m32 -g -Wall -Wextra -Werror -masm=intel -nostdlib -Tlinker.ld -nostartfiles $(c_object_files) $(asm_object_files) -o $(kernel) -lgcc
-	
-install:
-	@sudo dd if=bin/agni.iso of=/dev/sdb
 
-%.o: %.asm
-	@nasm -Fdwarf -felf32 $(@:.o=.asm) -o $@
+$(kernel): remove_old_initrd
+	@make -C shakti
 
-%.o: %.c
-	@i386-elf-gcc -g -Wall -Wextra -masm=intel -I./include -c -nostdlib -fno-builtin -O0 -ffreestanding $(@:.o=.c) -o $@
+$(initrd): 
+	@./.build_initrd.sh
