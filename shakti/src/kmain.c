@@ -38,8 +38,19 @@ void kmain(multiboot_info_t *mboot)
         kputs("[boot] displaying contents of file \"welcome\"\n");
         char *file = pmm_alloc_page();
         tar_read(file, f, 17);
-        kprintf("\n %s \n", file);
+        kprintf("%s \n", file);
         tar_close(f);
+        pmm_free_page(file);
+    } else {
+        kputs("[boot] opening test file failed\n");
+    }
+    tarFILE *about;
+    if((about = tar_open("about")) != NULL) {
+        kputs("[boot] displaying contents of file \"about\"\n");
+        char *file = pmm_alloc_page();
+        tar_read(file, about, 94);
+        kprintf("%s \n", file);
+        tar_close(about);
         pmm_free_page(file);
     } else {
         kputs("[boot] opening test file failed\n");
