@@ -25,6 +25,9 @@ $(target): $(kernel)
 	
 $(kernel): $(c_object_files) $(asm_object_files)
 	@i386-elf-gcc -m32 -g -Wall -Wextra -Werror -nostdlib -Tlinker.ld -nostartfiles $(c_object_files) $(asm_object_files) -o $(kernel) -lgcc
+	
+install:
+	@sudo dd if=bin/agni.iso of=/dev/sdb
 
 %.o: %.asm
 	@nasm -Fdwarf -felf32 $(@:.o=.asm) -o $@

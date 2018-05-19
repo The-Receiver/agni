@@ -2,7 +2,7 @@
 #include <klib.h>
 
 #define PAGE_SIZE 0x1000
-#define KRNL_BASE 0x10000000
+#define KRNL_BASE 0x1000000
 
 volatile uint8_t bitmap[(1024 * 1024) / CHAR_BIT] __attribute__((aligned(PAGE_SIZE)));
 
