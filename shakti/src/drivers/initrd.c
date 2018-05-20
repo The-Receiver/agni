@@ -43,11 +43,13 @@ static ssize_t find_free_handle()
 
 int initrd_open(char *path, int perms)
 {
-    tarhdr_t *ptr = (tarhdr_t *)archive;
+    uint8_t *ptr = (uint8_t *)archive;
+    tarhdr_t *hdr = (tarhdr_t *)ptr;
     
-    while(kstrcmp(ptr->magic, "ustar") == 0) {
-        size_t sz = atoi_octal(ptr->size);
-        if(kstrcmp(ptr->name, path) == 0) {
+    while(kstrcmp(hdr->magic, "ustar") == 0) {
+        hdr = (tarhdr_t *)ptr;
+        size_t sz = atoi_octal(hdr->size);
+        if(kstrcmp(hdr->name, path) == 0) {
             ssize_t free_handle = find_free_handle();
             if(free_handle < 0) {
                 return -1;
@@ -103,8 +105,7 @@ int intird_close(int handle)
 void initrd_install(uint32_t addr)
 {
     alloc_handles();
-    void *interim = (void *)addr;
-    archive = (uint8_t *)interim;
+    archive = (uint8_t *)addr;
 }
 
 

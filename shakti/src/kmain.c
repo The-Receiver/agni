@@ -32,8 +32,10 @@ void kmain(multiboot_info_t *mboot)
     }
     kprintf("[boot] initrd located at address %x \n", mboot->mods_addr);
     
-    initrd_install(mboot->mods_addr);
-    int handle = initrd_open("about", 0);
+    multiboot_module_t *p = (multiboot_module_t *)mboot->mods_addr;
+    uint32_t start = p->mod_start;
+    initrd_install(start);
+    int handle = initrd_open("welcome", 0);
     if(handle == -1) {
         kprintf("[boot] failed to open test file\n");
     } else {
