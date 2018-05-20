@@ -1,10 +1,10 @@
 #include <pmm.h>
 #include <vmm.h>
 #include <idt.h>
-#include <tar.h>
 #include <klib.h>
 #include <video.h>
 #include <paging.h>
+#include <initrd.h>
 #include <cpuid_kern.h>
 
 void kmain(multiboot_info_t *mboot)
@@ -30,30 +30,16 @@ void kmain(multiboot_info_t *mboot)
         kputs("[boot] FATAL: no modules loaded!\n");
         asm volatile("hlt");
     }
-    uint32_t *initrd_ptr = (uint32_t *) mboot->mods_addr;
-    kprintf("[boot] initrd located at address %x \n", initrd_ptr);
-    tar_mount(initrd_ptr);
-    tarFILE *f;
-    if((f = tar_open("welcome")) != NULL) {
-        kputs("[boot] displaying contents of file \"welcome\"\n");
-        char *file = pmm_alloc_page();
-        tar_read(file, f, 17);
-        kprintf("%s \n", file);
-        tar_close(f);
-        pmm_free_page(file);
+    kprintf("[boot] initrd located at address %x \n", mboot->mods_addr);
+    
+    initrd_install(mboot->mods_addr);
+    int handle = initrd_open("about", 0);
+    if(handle == -1) {
+        kprintf("[boot] failed to open test file\n");
     } else {
-        kputs("[boot] opening test file failed\n");
-    }
-    tarFILE *about;
-    if((about = tar_open("about")) != NULL) {
-        kputs("[boot] displaying contents of file \"about\"\n");
         char *file = pmm_alloc_page();
-        tar_read(file, about, 94);
+        initrd_read(handle, file, 21);
         kprintf("%s \n", file);
-        tar_close(about);
-        pmm_free_page(file);
-    } else {
-        kputs("[boot] opening test file failed\n");
     }
 
     asm volatile("hlt");

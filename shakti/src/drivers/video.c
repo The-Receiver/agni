@@ -36,6 +36,20 @@ void update_cursor(int x, int y)
 	outb(0x3D5, (uint8_t) ((pos >> 8) & 0xFF));
 }
 
+/*
+void terminal_scrolldown()
+{
+     VGA_WIDTH*1 = offset of second line /
+    for(size_t index = (VGA_WIDTH1); index < VGA_WIDTHVGA_HEIGHT; index++) {
+        VIDMEM[index-VGA_WIDTH1] = VIDMEM[index];
+    }
+
+    for(size_t index=0; index<VGA_WIDTH; index++) {
+        VIDMEM[index+(VGA_HEIGHT-1)*VGA_WIDTH] = vga_entry(' ', terminal_color);
+    }
+}
+*/
+
 void terminal_drawchar(char c, uint8_t xpos, uint8_t ypos, uint8_t colour)
 {
     size_t index = ypos * width + xpos;
