@@ -10,8 +10,8 @@ static initrd_handle_t *handles;
 
 typedef signed long int ssize_t;
 
-static uint32_t atoi_octal(char *in) {
-
+static uint32_t atoi_octal(char *in) 
+{
     uint32_t size = 0;
     uint32_t j;
 
@@ -21,7 +21,6 @@ static uint32_t atoi_octal(char *in) {
         size += ((in[j - 1] - '0') * count);
 
     return size;
-
 }
 
 static void alloc_handles()
