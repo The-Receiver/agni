@@ -25,11 +25,12 @@ typedef struct {
 } __attribute__((packed))tarhdr_t;
 
 typedef struct {
-    int perms;
     int used;
+    int perms;
+    size_t size;
     size_t offset;
     uint8_t *start;
-} tar_handle_t;
+} initrd_handle_t;
 
 int initrd_open(char *, int);
 int initrd_read(int, void *, size_t);
