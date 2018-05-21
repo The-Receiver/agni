@@ -32,8 +32,11 @@ typedef struct {
     uint8_t *start;
 } initrd_handle_t;
 
+typedef initrd_handle_t initrd_stat_t;
+
 int initrd_open(char *, int);
 int initrd_read(int, void *, size_t);
+int initrd_close(int);
 void initrd_install(uint32_t);
 
 #endif

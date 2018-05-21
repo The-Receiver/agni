@@ -47,6 +47,9 @@ char *kstrstr(char *haystack, char *needle)
 
 int kstrcmp(char *a, char *b)
 {
+    while(*(a) && (*(a) == *(b))) {
+        a++; b++;
+    }
     return *(const unsigned char*)a-*(const unsigned char*)b;
 }
 

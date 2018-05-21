@@ -75,6 +75,25 @@ int initrd_read(int handle, void *buf, size_t n)
     return n;
 }
 
+int initrd_stat(char *path, initrd_stat_t *statbuf)
+{
+    int handle = initrd_open(path, 0);
+    if(handle == -1) {
+        return -1;
+    }
+    
+    kmemcpy(statbuf, (initrd_stat_t *)&handles[handle], sizeof(initrd_stat_t));
+    
+    initrd_close(handle);
+    return 0;
+}
+
+int initrd_fstat(int handle, initrd_stat_t *statbuf)
+{
+    kmemcpy(statbuf, (initrd_stat_t *)&handles[handle], sizeof(initrd_stat_t));
+    return 0;
+}
+
 size_t initrd_lseek(int handle, size_t offset, int whence)
 {
     switch(whence) {
@@ -93,7 +112,7 @@ size_t initrd_lseek(int handle, size_t offset, int whence)
     return offset;
 }
 
-int intird_close(int handle)
+int initrd_close(int handle)
 {
     if(!handles[handle].used) {
         return -1;

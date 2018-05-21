@@ -14,15 +14,19 @@ void kmain(multiboot_info_t *mboot)
     pmm_init();
     kputs("agni version 0.0.1\n");
     kputs("starting boot...\n");
+    kputs("[boot] loading initrd...\n");
+    multiboot_module_t *p = (multiboot_module_t *)mboot->mods_addr;
+    uint32_t initrd_start = p->mod_start;
+    kprintf("[boot] initrd located at address %x \n", initrd_start);
+    initrd_install(initrd_start);
     char cpuname[12 * 4];
     cpuid_get_name(cpuname);
-    kprintf("cpu: %s \n", cpuname);
-    kprintf("lower memory start: %x \n", mboot->mem_lower);
-    kprintf("upper memory start: %x \n", mboot->mem_upper);
+    kprintf("[boot] cpu: %s \n", cpuname);
+    kprintf("[boot] lower memory start: %x \n", mboot->mem_lower);
+    kprintf("[boot] upper memory start: %x \n", mboot->mem_upper);
     kputs("[boot] interrupts initialized; testing the timer...");
     kdelay(3);
     kputs(" working!\n");
-    kputs("[boot] loading initrd...\n");
     if(mboot->mods_count > 1) {
         kputs("[boot] FATAL: more than one module\n");
         asm volatile("hlt");
@@ -30,19 +34,29 @@ void kmain(multiboot_info_t *mboot)
         kputs("[boot] FATAL: no modules loaded!\n");
         asm volatile("hlt");
     }
-    kprintf("[boot] initrd located at address %x \n", mboot->mods_addr);
     
-    multiboot_module_t *p = (multiboot_module_t *)mboot->mods_addr;
-    uint32_t start = p->mod_start;
-    initrd_install(start);
-    int handle = initrd_open("welcome", 0);
-    if(handle == -1) {
+    kputs("[boot] displaying files \"welcome\" and \"about\" from the initrd\n");
+    int handle_welcome = initrd_open("welcome", 0);
+    if(handle_welcome == -1) {
         kprintf("[boot] failed to open test file\n");
     } else {
         char *file = pmm_alloc_page();
-        initrd_read(handle, file, 21);
-        kprintf("%s \n", file);
+        initrd_read(handle_welcome, file, 21);
+        kputs(file);
+        initrd_close(handle_welcome);
+        pmm_free_page(file);
     }
-
+    
+    int handle_about = initrd_open("about", 0);
+    if(handle_about == -1) {
+        kprintf("[boot] failed to open test file\n");
+    } else {
+        char *file = pmm_alloc_page();
+        initrd_read(handle_about, file, 56);
+        kputs(file);
+        initrd_close(handle_about);
+        pmm_free_page(file);
+    }
+    
     asm volatile("hlt");
 }

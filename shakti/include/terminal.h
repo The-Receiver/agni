@@ -22,6 +22,7 @@ typedef enum {
     WHITE = 15,
 } colour_t;
 
+void terminal_set_colour(colour_t, colour_t);
 void terminal_drawchar(char, uint8_t, uint8_t, uint8_t);
 void terminal_putchar(char);
 void terminal_puts(char *);
