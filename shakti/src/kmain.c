@@ -36,7 +36,7 @@ void kmain(multiboot_info_t *mboot)
     }
     
     kputs("[boot] displaying files \"welcome\" and \"about\" from the initrd\n");
-    int handle_welcome = initrd_open("welcome", 0);
+    int handle_welcome = initrd_open("docs/welcome", 0);
     if(handle_welcome == -1) {
         kprintf("[boot] failed to open test file\n");
     } else {
@@ -47,7 +47,7 @@ void kmain(multiboot_info_t *mboot)
         pmm_free_page(file);
     }
     
-    int handle_about = initrd_open("about", 0);
+    int handle_about = initrd_open("docs/about", 0);
     if(handle_about == -1) {
         kprintf("[boot] failed to open test file\n");
     } else {
