@@ -94,7 +94,7 @@ int initrd_fstat(int handle, initrd_stat_t *statbuf)
     return 0;
 }
 
-size_t initrd_lseek(int handle, size_t offset, int whence)
+int initrd_lseek(int handle, int offset, int whence)
 {
     switch(whence) {
         case SEEK_SET:
@@ -109,7 +109,7 @@ size_t initrd_lseek(int handle, size_t offset, int whence)
             handles[handle].offset = (handles[handle].size + offset);
         break;
     }
-    return offset;
+    return handles[handle].offset;
 }
 
 int initrd_close(int handle)

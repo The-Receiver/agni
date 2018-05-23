@@ -52,7 +52,7 @@ void kmain(multiboot_info_t *mboot)
         kprintf("[boot] failed to open test file\n");
     } else {
         char *file = pmm_alloc_page();
-        initrd_read(handle_about, file, 56);
+        initrd_read(handle_about, file, 37);
         kputs(file);
         initrd_close(handle_about);
         pmm_free_page(file);
