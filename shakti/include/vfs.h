@@ -6,14 +6,14 @@
 
 typedef struct {
     char name[32];
-    int (*open)(char *);
+    int (*open)(char *, int);
     int (*close)(int);
-    int (*read)(int, void *, int);
-    int (*write)(int, void *, int);
+    int (*read)(int, void *, size_t);
+    int (*write)(int, void *, size_t);
     int (*stat)(char *, void *);
-    int (*fstat)(int, char *, void *);
+    int (*fstat)(int, void *);
     int (*lseek)(int, int, int);
-    int (*mount)(char *, char *, char *, long, void *);
+    int (*mount)(int);
 } vfs_fs_t;
 
 typedef struct {
@@ -22,8 +22,21 @@ typedef struct {
 } vfs_index_t;
 
 typedef struct {
-    char name[12];
-    size_t index_index;
+    int used;
+    int parent_handle;
+    vfs_fs_t *fs;
+} vfs_handle_t;
+
+typedef struct {
+    int dev;
+    vfs_fs_t *fs_ptr;
 } vfs_mountpoint_t;
+
+void vfs_init();
+int vfs_mount(char *, int);
+int vfs_open(char *, int);
+int vfs_read(int, void *, size_t);
+int vfs_close(int);
+int vfs_install_fs(char *name, int (*open)(char *, int), int (*close)(int), int (*read)(int, void *, size_t), int (*write)(int, void *, size_t), int (*stat)(char *, void *), int (*fstat)(int, void *), int (*lseek)(int, int, int), int (*mount)(int));
 
 #endif

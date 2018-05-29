@@ -1,5 +1,6 @@
 #include <pmm.h>
 #include <vmm.h>
+#include <vfs.h>
 #include <idt.h>
 #include <klib.h>
 #include <video.h>
@@ -18,7 +19,11 @@ void kmain(multiboot_info_t *mboot)
     multiboot_module_t *p = (multiboot_module_t *)mboot->mods_addr;
     uint32_t initrd_start = p->mod_start;
     kprintf("[boot] initrd located at address %x \n", initrd_start);
+    
+    vfs_init();
     initrd_install(initrd_start);
+    vfs_mount("initrd", 0);
+    
     char cpuname[12 * 4];
     cpuid_get_name(cpuname);
     kprintf("[boot] cpu: %s \n", cpuname);
@@ -34,27 +39,26 @@ void kmain(multiboot_info_t *mboot)
         kputs("[boot] FATAL: no modules loaded!\n");
         asm volatile("hlt");
     }
-    
     kputs("[boot] displaying files \"welcome\" and \"about\" from the initrd\n");
-    int handle_welcome = initrd_open("docs/welcome", 0);
+    int handle_welcome = vfs_open("0:docs/welcome", 0);
     if(handle_welcome == -1) {
         kprintf("[boot] failed to open test file\n");
     } else {
         char *file = pmm_alloc_page();
-        initrd_read(handle_welcome, file, 21);
+        vfs_read(handle_welcome, file, 21);
         kputs(file);
-        initrd_close(handle_welcome);
+        vfs_close(handle_welcome);
         pmm_free_page(file);
     }
     
-    int handle_about = initrd_open("docs/about", 0);
+    int handle_about = vfs_open("0:docs/about", 0);
     if(handle_about == -1) {
         kprintf("[boot] failed to open test file\n");
     } else {
         char *file = pmm_alloc_page();
-        initrd_read(handle_about, file, 37);
+        vfs_read(handle_about, file, 37);
         kputs(file);
-        initrd_close(handle_about);
+        vfs_close(handle_about);
         pmm_free_page(file);
     }
     

@@ -4,7 +4,20 @@
 #define NORMAL 0
 #define FORMAT 1
 
-uint8_t hex_to_ascii[] = {'0', '1', '2','3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+int kpow(int base, int exp)
+{
+    int result = 1;
+    for(;;) {
+        if(exp & 1) {
+            result *= base;
+        }
+        exp >>= 1;
+        if(!exp)
+            break;
+        base *= base;
+    }
+    return result;
+}
 
 size_t kstrlen(const char *s)
 {
@@ -72,6 +85,7 @@ void *kmemset(void *dest, int c, size_t n)
     return dest;
 }
 
+uint8_t hex_to_ascii[] = {'0', '1', '2','3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 void kputhex(uint64_t x)
 {
     int i;
@@ -92,6 +106,19 @@ void kputhex(uint64_t x)
     terminal_puts(buf + i);
 }
 
+int katoi(char *buf)
+{
+    int n = 0;
+    if(kstrcmp(buf, "0") == 0) {
+        return 0;
+    }
+    for(int i = 0; buf[i] != 0; i++) {
+        int power = kpow(10, i);
+        n += (power * (buf[i] - '0'));
+    }
+    return n;
+}
+
 void kputchar(char c)
 {
     terminal_putchar(c);
@@ -107,6 +134,7 @@ void kdelay(uint64_t secs)
     uint64_t initial = pit_secs();
     while((pit_secs() - initial) != secs);
 }
+
 
 size_t kprintf(const char *fmt, ...)
 {

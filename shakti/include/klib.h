@@ -4,6 +4,7 @@
 #include <stdarg.h>
 #include <terminal.h>
 
+int katoi(char *);
 void kputs(char *);
 void kputchar(char);
 void kdelay(uint64_t);

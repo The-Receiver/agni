@@ -1,4 +1,5 @@
 #include <pmm.h>
+#include <vfs.h>
 #include <initrd.h>
 
 #define SEEK_SET 0
@@ -75,22 +76,27 @@ int initrd_read(int handle, void *buf, size_t n)
     return n;
 }
 
-int initrd_stat(char *path, initrd_stat_t *statbuf)
+int initrd_write(int handle, void *buf, size_t n)
+{
+    return -1;
+}
+
+int initrd_stat(char *path, void *statbuf)
 {
     int handle = initrd_open(path, 0);
     if(handle == -1) {
         return -1;
     }
     
-    kmemcpy(statbuf, (initrd_stat_t *)&handles[handle], sizeof(initrd_stat_t));
+    kmemcpy((initrd_stat_t *)statbuf, (initrd_stat_t *)&handles[handle], sizeof(initrd_stat_t));
     
     initrd_close(handle);
     return 0;
 }
 
-int initrd_fstat(int handle, initrd_stat_t *statbuf)
+int initrd_fstat(int handle, void *statbuf)
 {
-    kmemcpy(statbuf, (initrd_stat_t *)&handles[handle], sizeof(initrd_stat_t));
+    kmemcpy((initrd_stat_t *)statbuf, (initrd_stat_t *)&handles[handle], sizeof(initrd_stat_t));
     return 0;
 }
 
@@ -121,9 +127,15 @@ int initrd_close(int handle)
     return 0;
 }
 
+int initrd_mount(int dev)
+{
+    return 0;
+}
+
 void initrd_install(uint32_t addr)
 {
     alloc_handles();
+    vfs_install_fs("initrd", initrd_open, initrd_close, initrd_read, initrd_write, initrd_stat, initrd_fstat, initrd_lseek, initrd_mount);
     archive = (uint8_t *)addr;
 }
 

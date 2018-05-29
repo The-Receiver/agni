@@ -6,26 +6,6 @@
 
 volatile uint8_t bitmap[(1024 * 1024) / CHAR_BIT] __attribute__((aligned(PAGE_SIZE)));
 
-static uint8_t check_bit(size_t i)
-{
-    size_t which = i / CHAR_BIT;
-    size_t off = i % CHAR_BIT;
-    
-    return (uint8_t)((bitmap[which] >> off) & 1);
-}
-
-static void write_bit(size_t i, uint8_t val)
-{
-    size_t which = i / CHAR_BIT;
-    size_t off = i % CHAR_BIT;
-    
-    if(val) {
-        bitmap[which] |= (1 << off);
-    } else {
-        bitmap[which] |= ~(1 << off);
-    }
-}
-
 void pmm_init()
 {
     for(size_t i = 0; i < (1024 * 1024) / CHAR_BIT; i++) {
