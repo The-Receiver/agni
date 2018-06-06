@@ -6,25 +6,25 @@ uint64_t seconds = 0;
 
 void pit_init(void)
 {
-    irq_install_handler(0, pit_handler);
+	irq_install_handler(0, pit_handler);
 }
 
-void pit_handler(regs_t *r)
+void pit_handler(regs_t * r)
 {
-    int n = r->int_no;
-    n += 5;
-    ticks++;
-    if((ticks % 18) == 0) {
-        seconds++;
-    }
+	int n = r->int_no;
+	n += 5;
+	ticks++;
+	if ((ticks % 18) == 0) {
+		seconds++;
+	}
 }
 
 uint64_t pit_ticks()
 {
-    return ticks;
+	return ticks;
 }
 
 uint64_t pit_secs()
 {
-    return seconds;
+	return seconds;
 }

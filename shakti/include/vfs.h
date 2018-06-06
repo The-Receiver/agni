@@ -36,6 +36,7 @@ void vfs_init();
 int vfs_mount(char *, int);
 int vfs_open(char *, int);
 int vfs_read(int, void *, size_t);
+int vfs_fstat(int, void *);
 int vfs_close(int);
 int vfs_install_fs(char *name, int (*open)(char *, int), int (*close)(int), int (*read)(int, void *, size_t), int (*write)(int, void *, size_t), int (*stat)(char *, void *), int (*fstat)(int, void *), int (*lseek)(int, int, int), int (*mount)(int));
 

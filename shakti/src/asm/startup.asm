@@ -3,13 +3,14 @@ global start
 extern kmain
 extern paging_init
 extern set_up_page_tables
+global stack_top
 
 %define LOAD_ADDRESS 0x00100000
 %define HIGHER_HALF_ADDRESS 0xC0100000
 
 section .bss
 stack_bottom:
-    resb 4096
+    resb 262144
 stack_top:
 
 section .rodata
