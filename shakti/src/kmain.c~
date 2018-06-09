@@ -71,5 +71,13 @@ void kmain(multiboot_info_t * mboot)
 	kputs("[boot] starting scheduler...\n");
 	sched_init();
 
+	int eax, ebx, ecx, edx;
+
+	asm volatile ("mov %0, %%eax":"=r" (eax)::);
+
+	int pid =
+	    sched_create("kernel", 0x10, (uint32_t) pd, start, stack_top, 0, 0,
+			 0, 0);
+
 	asm volatile ("hlt");
 }

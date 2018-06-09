@@ -50,7 +50,7 @@ int conf_parse(char *path, conf_t * conf)
 				i++;
 				break;
 			}
-			value[j] = *(ptr);
+			key[j] = *(ptr);
 		}
 		kmemcpy(conf[original_i].key, key, k);
 		kmemcpy(conf[original_i].value, value, l);
