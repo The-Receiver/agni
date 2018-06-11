@@ -12,8 +12,8 @@ int conf_parse(char *path, conf_t * conf)
 	if (handle == -1) {
 		return -1;
 	}
-	char *filebuf = pmm_alloc_page();
-	initrd_stat_t *statbuf = pmm_alloc_page();
+	char *filebuf = pmm_alloc(1);
+	initrd_stat_t *statbuf = pmm_alloc(1);
 
 	vfs_fstat(handle, statbuf);
 	vfs_read(handle, filebuf, statbuf->size);

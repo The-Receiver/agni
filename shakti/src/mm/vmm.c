@@ -2,7 +2,7 @@
 
 void *vmm_alloc_page()
 {
-	return pmm_alloc_page();
+	return pmm_alloc(1);
 }
 
 void vmm_free_page(void *ptr)
