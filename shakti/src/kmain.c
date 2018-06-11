@@ -61,7 +61,7 @@ void kmain(multiboot_info_t * mboot)
 	if (handle_about == -1) {
 		kprintf("[boot] failed to open test file\n");
 	} else {
-		char *file = pmm_alloc_page();
+		char *file = pmm_alloc(1);
 		vfs_read(handle_about, file, 37);
 		kprintf("[boot] about: %s", file);
 		vfs_close(handle_about);
