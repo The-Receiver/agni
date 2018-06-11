@@ -72,6 +72,21 @@ void *vmm_alloc(size_t n)
     return (void *)(uintptr_t)(phys + HIGHER_HALF_ADDRESS);
 }
 
+void *vmm_realloc(void *ptr, size_t n)
+{
+    void *phys = pmm_realloc((ptr - HIGHER_HALF_ADDRESS), n);
+    if (phys == NULL) {
+        return NULL;
+    }
+    
+    for (size_t i = 0; i < n; i++) {
+        void *phys_l = (void *)(uintptr_t)phys + (i * PAGE_SIZE);
+        void *virt_l = phys_l + HIGHER_HALF_ADDRESS;
+        map_page(phys_l, virt_l, 0);
+    }
+    
+    return (void *)(uintptr_t)(phys + HIGHER_HALF_ADDRESS);
+}
 
 void vmm_free(void *ptr, size_t n)
 {
