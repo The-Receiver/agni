@@ -10,7 +10,7 @@ global stack_top
 
 section .bss
 stack_bottom:
-    resb 262144
+    resb 4096
 stack_top:
 
 section .rodata

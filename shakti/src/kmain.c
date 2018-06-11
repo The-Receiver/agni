@@ -50,22 +50,22 @@ void kmain(multiboot_info_t * mboot)
 	if (handle_welcome == -1) {
 		kprintf("[boot] failed to open test file\n");
 	} else {
-		char *file = pmm_alloc(1);
-		vfs_read(handle_welcome, file, 21);
+		char *file = vmm_alloc(1);
+		vfs_read(handle_welcome, file, 211);
 		kprintf("[boot] welcome: %s", file);
 		vfs_close(handle_welcome);
-		pmm_free_page(file);
-	}
+		vmm_free(file, 1);
+    }
 
 	int handle_about = vfs_open("0:docs/about", 0);
 	if (handle_about == -1) {
 		kprintf("[boot] failed to open test file\n");
 	} else {
-		char *file = pmm_alloc(1);
+		char *file = vmm_alloc(1);
 		vfs_read(handle_about, file, 37);
 		kprintf("[boot] about: %s", file);
 		vfs_close(handle_about);
-		pmm_free_page(file);
+		vmm_free(file, 1);
 	}
 
 	kputs("[boot] starting scheduler...\n");

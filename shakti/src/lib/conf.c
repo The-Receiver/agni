@@ -1,5 +1,5 @@
 #include <vfs.h>
-#include <pmm.h>
+#include <vmm.h>
 #include <klib.h>
 #include <conf.h>
 #include <initrd.h>
@@ -12,8 +12,8 @@ int conf_parse(char *path, conf_t * conf)
 	if (handle == -1) {
 		return -1;
 	}
-	char *filebuf = pmm_alloc(1);
-	initrd_stat_t *statbuf = pmm_alloc(1);
+	char *filebuf = vmm_alloc(1);
+	initrd_stat_t *statbuf = vmm_alloc(1);
 
 	vfs_fstat(handle, statbuf);
 	vfs_read(handle, filebuf, statbuf->size);
@@ -55,5 +55,9 @@ int conf_parse(char *path, conf_t * conf)
 		kmemcpy(conf[original_i].key, key, k);
 		kmemcpy(conf[original_i].value, value, l);
 	}
+	
+	vmm_free(filebuf, 1);
+    vmm_free(statbuf, 1);
+	
 	return 0;
 }
