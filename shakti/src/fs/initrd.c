@@ -1,4 +1,4 @@
-#include <pmm.h>
+#include <vmm.h>
 #include <vfs.h>
 #include <initrd.h>
 
@@ -26,7 +26,7 @@ static uint32_t atoi_octal(char *in)
 
 static void alloc_handles()
 {
-	handles = pmm_alloc(1);
+	handles = vmm_alloc(1);
 	for (size_t i = 0; i < 128; i++) {
 		handles[i].used = 0;
 	}

@@ -1,4 +1,4 @@
-#include <pmm.h>
+#include <vmm.h>
 #include <vfs.h>
 #include <klib.h>
 
@@ -39,9 +39,9 @@ static int find_free_mountpoint()
 
 void vfs_init()
 {
-	handles = pmm_alloc(1);
-	mountpoints = pmm_alloc(1);
-	filesystems = pmm_alloc(1);
+	handles = vmm_alloc(1);
+	mountpoints = vmm_alloc(1);
+	filesystems = vmm_alloc(1);
 	for (size_t i = 0; i < 64; i++) {
 		filesystems[i].open = NULL;
 	}

@@ -4,7 +4,7 @@
 #include <klib.h>
 #include <paging.h>
 
-void *vmm_alloc_page(void);
-void vmm_free_page(void *);
+void *vmm_alloc(size_t);
+void vmm_free(void *, size_t);
 
 #endif
