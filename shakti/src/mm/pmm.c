@@ -7,7 +7,7 @@
 volatile uint8_t bitmap[(1024 * 1024) / 8]
     __attribute__ ((aligned(PAGE_SIZE)));
     
-int bitmap_read(size_t i)
+static int bitmap_read(size_t i)
 {
     size_t which = i / 8;
     size_t bit = i % 8;
@@ -15,7 +15,7 @@ int bitmap_read(size_t i)
     return (int) (bitmap[which] >> bit) & 1;
 }
 
-void bitmap_write(size_t i, int val)
+static void bitmap_write(size_t i, int val)
 {
     size_t which = i / 8;
     size_t bit = i % 8;
