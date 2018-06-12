@@ -54,21 +54,45 @@ void *pmm_alloc(size_t n)
     }
     size_t i, j, start = 0;
     for (i = 0; i < (1024 * 1024) / 8; i++) {
-        if (!bitmap_read(i))
+        if (!bitmap_read(i)) {
             j++;
-        else
+        } else {
             j = 0;
+        }
         if (j == n)
             goto found;
     }
     return NULL;
     
 found:
-    start = (i - n) - 1;
+    start = (i - n) + 1;
     for (i = start; i < start + n; i++) {
         bitmap_write(i, 1);
     }
     return (void *)(KRNL_BASE + (start * PAGE_SIZE));
+}
+
+void *pmm_realloc(void *ptr, size_t n)
+{
+    size_t i, j, start = 0;
+    size_t bit = (uintptr_t)ptr / PAGE_SIZE;
+    
+    for(i = bit; i < (n + bit); i++) {
+        if (!bitmap_read(i))
+            j++;
+        else 
+            j = 0;
+        if(j == n) 
+            goto found;
+    }
+    return NULL;
+    
+found:
+    start = (i - n) + 1;
+    for (i = start; i < (start + n); i++) {
+        bitmap_write(i, 1);
+    }
+    return (void *)KRNL_BASE + (start * PAGE_SIZE);
 }
 
 void pmm_free_page(void *addr)

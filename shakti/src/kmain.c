@@ -50,7 +50,7 @@ void kmain(multiboot_info_t * mboot)
 	if (handle_welcome == -1) {
 		kprintf("[boot] failed to open test file\n");
 	} else {
-		char *file = vmm_alloc(1);
+		char *file = vmm_alloc(0x1000);
 		vfs_read(handle_welcome, file, 211);
 		kprintf("[boot] welcome: %s", file);
 		vfs_close(handle_welcome);
