@@ -92,6 +92,6 @@ void vmm_free(void *ptr, size_t n)
 {
     for (size_t i = 0; i < n; i++) {
         unmap_page((void *)(uintptr_t)ptr + (i * PAGE_SIZE));
-        pmm_free_page((void *)(uintptr_t)ptr + (i * PAGE_SIZE) - HIGHER_HALF_ADDRESS);
+        pmm_free((void *)(uintptr_t)(ptr + (i * PAGE_SIZE)) - HIGHER_HALF_ADDRESS, 1);
     }
 }

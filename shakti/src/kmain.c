@@ -51,10 +51,11 @@ void kmain(multiboot_info_t * mboot)
 		kprintf("[boot] failed to open test file\n");
 	} else {
 		char *file = vmm_alloc(0x1000);
+        kprintf("file allocated at address %x \n", file);
 		vfs_read(handle_welcome, file, 211);
 		kprintf("[boot] welcome: %s", file);
 		vfs_close(handle_welcome);
-		vmm_free(file, 1);
+		vmm_free(file, 0x1000);
     }
 
 	int handle_about = vfs_open("0:docs/about", 0);
@@ -62,6 +63,7 @@ void kmain(multiboot_info_t * mboot)
 		kprintf("[boot] failed to open test file\n");
 	} else {
 		char *file = vmm_alloc(1);
+        kprintf("file allocated at address %x \n", file);
 		vfs_read(handle_about, file, 37);
 		kprintf("[boot] about: %s", file);
 		vfs_close(handle_about);

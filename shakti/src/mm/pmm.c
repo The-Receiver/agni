@@ -110,10 +110,9 @@ void pmm_free_page(void *addr)
 
 void pmm_free(void *ptr, size_t n)
 {
-    if (n == 1) {
-        pmm_free_page(ptr);
-    }
-    for (size_t i = (uintptr_t)ptr/PAGE_SIZE; i < n + (uintptr_t)ptr/PAGE_SIZE; i++) {
+    size_t bit = ((size_t)(ptr - KRNL_BASE) / PAGE_SIZE);
+    
+    for (size_t i = bit; i < (bit + n); i++) {
         bitmap_write(i, 0);
     }
 }
