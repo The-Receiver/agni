@@ -92,7 +92,7 @@ found:
     for (i = start; i < (start + n); i++) {
         bitmap_write(i, 1);
     }
-    return (void *)KRNL_BASE + (start * PAGE_SIZE);
+    return (void *)(KRNL_BASE + (start * PAGE_SIZE));
 }
 
 void pmm_free_page(void *addr)
