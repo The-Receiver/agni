@@ -93,6 +93,11 @@ uint8_t hex_to_ascii[] =
 	'f'
 };
 
+uint8_t dec_to_ascii[] = 
+{
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+};
+
 void kputhex(uint64_t x)
 {
 	int i;
@@ -111,6 +116,36 @@ void kputhex(uint64_t x)
 	i++;
 	terminal_puts("0x");
 	terminal_puts(buf + i);
+}
+
+char *kstrrev(char *s)
+{
+    char *p1, *p2;
+
+    if (!s || ! *s)
+        return s;
+
+    for (p1 = s, p2 = s + kstrlen(s) - 1; p2 > p1; ++p1, --p2) {
+        *p1 ^= *p2;
+        *p2 ^= *p1;
+        *p1 ^= *p2;
+    }
+
+    return s;
+}
+
+void kputdec(uint64_t x)
+{
+    int i = 0;
+    char buf[50] = { 0 };
+    
+    while (x) {
+        buf[i] = dec_to_ascii[x % 10];
+        x /= 10;
+        i++;
+    }
+    
+    kputs(kstrrev(buf));
 }
 
 int katoi(char *buf)
@@ -173,6 +208,9 @@ size_t kprintf(const char *fmt, ...)
 			case 'x':
 				kputhex(va_arg(parameters, uint32_t));
 				break;
+            case 'u':
+                kputdec(va_arg(parameters, uint32_t));
+                break;
 			default:
 				mode = NORMAL;
 				break;
