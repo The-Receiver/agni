@@ -17,7 +17,7 @@ void kmain(multiboot_info_t * mboot)
 {
 	idt_init();
 	video_init();
-	pmm_init();
+	pmm_init(mboot);
 	kputs("agni version 0.0.1\n");
 	kputs("starting boot...\n");
 	kputs("[boot] loading initrd...\n");
@@ -32,8 +32,7 @@ void kmain(multiboot_info_t * mboot)
 	char cpuname[12 * 4];
 	cpuid_get_name(cpuname);
 	kprintf("[boot] cpu: %s \n", cpuname);
-	kprintf("[boot] lower memory start: %x \n", mboot->mem_lower);
-	kprintf("[boot] upper memory start: %x \n", mboot->mem_upper);
+    kprintf("[boot] mem: %x  megabytes of RAM\n", (mboot->mem_lower + mboot->mem_upper) / 1024);
 	kputs("[boot] interrupts initialized; testing the timer...");
 	kdelay(3);
 	kputs(" working!\n");
@@ -44,29 +43,32 @@ void kmain(multiboot_info_t * mboot)
 		kputs("[boot] FATAL: no modules loaded!\n");
 		asm volatile ("hlt");
 	}
-	kputs
-	    ("[boot] displaying files \"welcome\" and \"about\" from the initrd\n");
+	char *welcome, *about;
+	kputs("[boot] displaying files \"welcome\" and \"about\" from the initrd\n");
 	int handle_welcome = vfs_open("0:docs/welcome", 0);
 	if (handle_welcome == -1) {
 		kprintf("[boot] failed to open test file\n");
 	} else {
-		char *file = vmm_alloc(0x1000);
-		vfs_read(handle_welcome, file, 211);
-		kprintf("[boot] welcome: %s", file);
+		welcome = vmm_alloc(0x1000);
+        kprintf("[boot] virtual memory for welcome allocated at virtual address %x \n", welcome);
+		vfs_read(handle_welcome, welcome, 211);
+		kprintf("[boot] welcome: %s", welcome);
 		vfs_close(handle_welcome);
-		vmm_free(file, 0x1000);
     }
 
 	int handle_about = vfs_open("0:docs/about", 0);
 	if (handle_about == -1) {
 		kprintf("[boot] failed to open test file\n");
 	} else {
-		char *file = vmm_alloc(1);
-		vfs_read(handle_about, file, 37);
-		kprintf("[boot] about: %s", file);
+		about = vmm_alloc(1);
+        kprintf("[boot] virtual memory for about allocated at virtual address %x \n", about);
+		vfs_read(handle_about, about, 37);
+		kprintf("[boot] about: %s", about);
 		vfs_close(handle_about);
-		vmm_free(file, 1);
 	}
+	
+	vmm_free(welcome, 0x1000);
+    vmm_free(about, 1);
 
 	kputs("[boot] starting scheduler...\n");
 	sched_init();

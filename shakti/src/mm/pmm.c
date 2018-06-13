@@ -4,7 +4,9 @@
 #define PAGE_SIZE 0x1000
 #define KRNL_BASE 0x1000000
 
-static volatile uint8_t bitmap[(1024 * 1024) / 8]
+#define BM_FULL (32768)
+
+static volatile uint8_t bitmap[BM_FULL]
     __attribute__ ((aligned(PAGE_SIZE)));
     
 static int bitmap_read(size_t i)
@@ -27,18 +29,27 @@ static void bitmap_write(size_t i, int val)
     }
 }
 
-void pmm_init()
+void pmm_init(multiboot_info_t *mboot)
 {
-	for (size_t i = 0; i < (1024 * 1024) / 8; i++) {
-		bitmap[i] = 0;
-	}
-
-	bitmap[0] = 1;
+    multiboot_memory_map_t *mmap;
+    
+    if (mboot->flags & 0x1) {
+        mmap = (multiboot_memory_map_t *)mboot->mmap_addr;
+    } else {
+        kputs("[boot] error! failed to read memory map!\n");
+        for (;;);
+    }
+    
+    for (size_t i = 0; i < BM_FULL; i++) {
+        bitmap[i] = 0;
+    }
+    
+    bitmap[0] = 1;
 }
 
 void *pmm_alloc_page()
 {
-	for (size_t i = 0; i < (1024 * 1024) / 8; i++) {
+	for (size_t i = 0; i < BM_FULL; i++) {
         if (!bitmap_read(i)) {
             bitmap_write(i, 1);
             return (void *)(KRNL_BASE + (i * PAGE_SIZE));
@@ -53,7 +64,7 @@ void *pmm_alloc(size_t n)
         return pmm_alloc_page();
     }
     size_t i, j, start = 0;
-    for (i = 0; i < (1024 * 1024) / 8; i++) {
+    for (i = 0; i < BM_FULL; i++) {
         if (!bitmap_read(i)) {
             j++;
         } else {
@@ -93,19 +104,6 @@ found:
         bitmap_write(i, 1);
     }
     return (void *)(KRNL_BASE + (start * PAGE_SIZE));
-}
-
-void pmm_free_page(void *addr)
-{
-	size_t bit = (uintptr_t) addr / PAGE_SIZE;
-	for (size_t i = 0; i < (1024 * 1024) / 8; i++) {
-		for (size_t j = 0; j < 8; j++) {
-			if (((i * 8 + j) * PAGE_SIZE) == bit) {
-				bitmap[i] &= ~(1 << j);
-				return;
-			}
-		}
-	}
 }
 
 void pmm_free(void *ptr, size_t n)
