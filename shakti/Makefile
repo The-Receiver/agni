@@ -12,10 +12,10 @@ clean:
 	@rm -rf $(c_object_files) $(asm_object_files)
 
 $(target): $(c_object_files) $(asm_object_files)
-	@i386-elf-gcc -g -Wall -Wextra -Werror -masm=intel -nostdlib -Tlinker.ld -n $(c_object_files) $(asm_object_files) -o $(target) -lgcc
+	@i386-elf-gcc -g -fPIC -Wall -Wextra -Werror -masm=intel -nostdlib -Tlinker.ld -n $(c_object_files) $(asm_object_files) -o $(target) -lgcc
 
 %.o: %.asm
 	@nasm -Fdwarf -felf32 $(@:.o=.asm) -o $@
 
 %.o: %.c
-	@i386-elf-gcc -g -Wall -Wextra -masm=intel -I./include -c -nostdlib -fno-builtin -O0 -ffreestanding $(@:.o=.c) -o $@
+	@i386-elf-gcc -fPIC -g -Wall -Wextra -masm=intel -I./include -c -nostdlib -fno-builtin -O0 -ffreestanding $(@:.o=.c) -o $@

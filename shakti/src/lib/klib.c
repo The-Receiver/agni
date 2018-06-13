@@ -213,7 +213,7 @@ size_t kprintf(const char *fmt, ...)
                 break;
 			default:
 				mode = NORMAL;
-				break;d
+				break;
 			}
 			break;
 		}

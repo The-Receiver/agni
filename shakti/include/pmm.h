@@ -11,5 +11,6 @@ void *pmm_alloc_page(void);
 void pmm_free_page(void *);
 void *pmm_alloc(size_t);
 void pmm_free(void *, size_t);
+void *pmm_realloc(void *, size_t);
 
 #endif
