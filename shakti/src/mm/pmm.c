@@ -31,10 +31,12 @@ static void bitmap_write(size_t i, int val)
 
 void pmm_init(multiboot_info_t *mboot)
 {
+    size_t mmap_len;
     multiboot_memory_map_t *mmap;
     
     if (mboot->flags & 0x1) {
         mmap = (multiboot_memory_map_t *)mboot->mmap_addr;
+        mmap_len = mboot->mmap_length;
     } else {
         kputs("[boot] error! failed to read memory map!\n");
         for (;;);

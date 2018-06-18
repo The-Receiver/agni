@@ -39,9 +39,9 @@ static int find_free_mountpoint()
 
 void vfs_init()
 {
-	handles = vmm_alloc(1);
-	mountpoints = vmm_alloc(1);
-	filesystems = vmm_alloc(1);
+	handles = vmm_alloc(1, 0);
+	mountpoints = vmm_alloc(1, 0);
+	filesystems = vmm_alloc(1, 0);
 	for (size_t i = 0; i < 64; i++) {
 		filesystems[i].open = NULL;
 	}

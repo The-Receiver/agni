@@ -27,14 +27,10 @@ void map_page(void *phys, void *virt, int user)
             page_table[i] = 0;
         }
         
-        if (user) {
-            page_directory[pd_index] = (uint32_t)page_table | 0x07;
-        } else {
-            page_directory[pd_index] = (uint32_t)page_table | 0x03;
-        }
+        page_directory[pd_index] |= (user) ? 0x07 : 0x03; 
     }
     
-    page_table[pt_index] = (uint32_t)phys | 0x03;
+    page_table[pt_index] = (user) ? (uint32_t)phys | 0x07 : (uint32_t)phys | 0x03;
 }
 
 void unmap_page(void *virt)
@@ -56,7 +52,7 @@ void unmap_page(void *virt)
     page_table[pt_index] = 0;
 }
 
-void *vmm_alloc(size_t n)
+void *vmm_alloc(size_t n, int user)
 {
     void *phys = pmm_alloc(n);
     if (phys == NULL) {
@@ -66,13 +62,13 @@ void *vmm_alloc(size_t n)
     for (size_t i = 0; i < n; i++) {
         void *phys_l = (void *)(uintptr_t)phys + (i * PAGE_SIZE);
         void *virt_l = phys_l + HIGHER_HALF_ADDRESS;
-        map_page(phys_l, virt_l, 0);
+        map_page(phys_l, virt_l, user);
     }
     
     return (void *)(uintptr_t)(phys + HIGHER_HALF_ADDRESS);
 }
 
-void *vmm_realloc(void *ptr, size_t n)
+void *vmm_realloc(void *ptr, size_t n, int user)
 {
     void *phys = pmm_realloc((ptr - HIGHER_HALF_ADDRESS), n);
     if (phys == NULL) {
@@ -82,7 +78,7 @@ void *vmm_realloc(void *ptr, size_t n)
     for (size_t i = 0; i < n; i++) {
         void *phys_l = (void *)(uintptr_t)phys + (i * PAGE_SIZE);
         void *virt_l = phys_l + HIGHER_HALF_ADDRESS;
-        map_page(phys_l, virt_l, 0);
+        map_page(phys_l, virt_l, user);
     }
     
     return (void *)(uintptr_t)(phys + HIGHER_HALF_ADDRESS);

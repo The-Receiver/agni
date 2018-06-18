@@ -6,6 +6,8 @@ idtdesc_t idt[256];
 
 extern void idt_load();
 
+extern void a();
+
 extern void isr0();
 extern void isr1();
 extern void isr2();
@@ -90,9 +92,8 @@ void idt_init()
 	idt_set_gate(30, (uint32_t) isr30, 0x08, 0x8E);
 	idt_set_gate(31, (uint32_t) isr31, 0x08, 0x8E);
 
-	pit_init();
+    sched_init();
 
 	irq_init();
 	idt_load();
-	asm volatile ("sti");
 }

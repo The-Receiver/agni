@@ -18,6 +18,9 @@ typedef struct {
     uint32_t base;
 } __attribute((packed)) idtptr_t;
 
+#define interrupts_on() { asm volatile ("sti"); }
+#define interrupts_off() { asm volatile ("cli"); }
+
 void irq_init();
 void idt_init();
 void irq_uninstall_handler(int);
