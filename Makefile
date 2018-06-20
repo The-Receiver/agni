@@ -8,7 +8,7 @@ remove_old_initrd:
 	@rm -rf iso/boot/initrd.tar
 
 run: all
-	@qemu-system-i386 -m 32M -monitor stdio bin/agni.iso
+	@qemu-system-i386 -m 32M -monitor stdio bin/agni.iso #-d int -no-reboot -no-shutdown
 
 $(target): $(kernel) $(initrd)
 	@mv -f $(kernel) iso/boot

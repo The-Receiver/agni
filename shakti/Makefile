@@ -18,4 +18,4 @@ $(target): $(c_object_files) $(asm_object_files)
 	@nasm -Fdwarf -felf32 $(@:.o=.asm) -o $@
 
 %.o: %.c
-	@i386-elf-gcc -fPIC -g -Wall -Wextra -masm=intel -I./include -c -nostdlib -fno-builtin -O0 -ffreestanding $(@:.o=.c) -o $@
+	@i386-elf-gcc -O3 -fPIC -g -Wall -Wextra -masm=intel -I./include -c -nostdlib -fno-builtin -O0 -ffreestanding $(@:.o=.c) -o $@

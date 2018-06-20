@@ -1,19 +1,18 @@
-#include <pmm.h>
 #include <klib.h>
+#include <pmm.h>
 
 #define PAGE_SIZE 0x1000
 #define KRNL_BASE 0x1000000
 
 #define BM_FULL (32768)
 
-static volatile uint8_t bitmap[BM_FULL]
-    __attribute__ ((aligned(PAGE_SIZE)));
-    
+static volatile uint8_t bitmap[BM_FULL] __attribute__ ((aligned(PAGE_SIZE)));
+
 static int bitmap_read(size_t i)
 {
     size_t which = i / 8;
     size_t bit = i % 8;
-    
+
     return (int)((bitmap[which] >> bit) & 1);
 }
 
@@ -21,7 +20,7 @@ static void bitmap_write(size_t i, int val)
 {
     size_t which = i / 8;
     size_t bit = i % 8;
-    
+
     if (val) {
         bitmap[which] |= (1 << bit);
     } else {
@@ -29,35 +28,35 @@ static void bitmap_write(size_t i, int val)
     }
 }
 
-void pmm_init(multiboot_info_t *mboot)
+void pmm_init(multiboot_info_t * mboot)
 {
     size_t mmap_len;
     multiboot_memory_map_t *mmap;
-    
+
     if (mboot->flags & 0x1) {
-        mmap = (multiboot_memory_map_t *)mboot->mmap_addr;
+        mmap = (multiboot_memory_map_t *) mboot->mmap_addr;
         mmap_len = mboot->mmap_length;
     } else {
         kputs("[boot] error! failed to read memory map!\n");
-        for (;;);
+        for (;;) ;
     }
-    
+
     for (size_t i = 0; i < BM_FULL; i++) {
         bitmap[i] = 0;
     }
-    
+
     bitmap[0] = 1;
 }
 
 void *pmm_alloc_page()
 {
-	for (size_t i = 0; i < BM_FULL; i++) {
+    for (size_t i = 0; i < BM_FULL; i++) {
         if (!bitmap_read(i)) {
             bitmap_write(i, 1);
             return (void *)(KRNL_BASE + (i * PAGE_SIZE));
         }
-	}
-	return NULL;
+    }
+    return NULL;
 }
 
 void *pmm_alloc(size_t n)
@@ -76,8 +75,8 @@ void *pmm_alloc(size_t n)
             goto found;
     }
     return NULL;
-    
-found:
+
+ found:
     start = (i - n) + 1;
     for (i = start; i < start + n; i++) {
         bitmap_write(i, 1);
@@ -88,19 +87,19 @@ found:
 void *pmm_realloc(void *ptr, size_t n)
 {
     size_t i, j, start = 0;
-    size_t bit = (uintptr_t)ptr / PAGE_SIZE;
-    
-    for(i = bit; i < (n + bit); i++) {
+    size_t bit = (uintptr_t) ptr / PAGE_SIZE;
+
+    for (i = bit; i < (n + bit); i++) {
         if (!bitmap_read(i))
             j++;
-        else 
+        else
             j = 0;
-        if(j == n) 
+        if (j == n)
             goto found;
     }
     return NULL;
-    
-found:
+
+ found:
     start = (i - n) + 1;
     for (i = start; i < (start + n); i++) {
         bitmap_write(i, 1);
@@ -110,8 +109,8 @@ found:
 
 void pmm_free(void *ptr, size_t n)
 {
-    size_t bit = ((size_t)(ptr - KRNL_BASE) / PAGE_SIZE);
-    
+    size_t bit = ((size_t) (ptr - KRNL_BASE) / PAGE_SIZE);
+
     for (size_t i = bit; i < (bit + n); i++) {
         bitmap_write(i, 0);
     }

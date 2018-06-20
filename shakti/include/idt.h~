@@ -6,16 +6,16 @@
 #include <stdint.h>
 
 typedef struct {
-    uint16_t off0;
-    uint16_t sel;
-    uint8_t zero;
-    uint8_t type;
-    uint16_t off1;
-} __attribute__ ((packed)) idtdesc_t;
+  uint16_t off0;
+  uint16_t sel;
+  uint8_t zero;
+  uint8_t type;
+  uint16_t off1;
+} __attribute__((packed)) idtdesc_t;
 
 typedef struct {
-    uint16_t limit;
-    uint32_t base;
+  uint16_t limit;
+  uint32_t base;
 } __attribute((packed)) idtptr_t;
 
 #define interrupts_on()                                                        \

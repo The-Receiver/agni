@@ -2,8 +2,8 @@
 #define TAR_H
 
 #include <klib.h>
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
 typedef struct {
     char name[100];
@@ -22,7 +22,7 @@ typedef struct {
     char devmajor[8];
     char devminor[8];
     char prefix[155];
-} __attribute__((packed))tarhdr_t;
+} __attribute__ ((packed)) tarhdr_t;
 
 typedef struct {
     int used;

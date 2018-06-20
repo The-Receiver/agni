@@ -1,12 +1,11 @@
 #ifndef VIDEO_H
 #define VIDEO_H
 
-#include <stdint.h>
-#include <stddef.h>
 #include <multiboot.h>
+#include <stddef.h>
+#include <stdint.h>
 
-typedef struct vbe_mode_t
-{
+typedef struct vbe_mode_t {
     uint16_t attributes;
     uint8_t window_a;
     uint8_t window_b;
@@ -42,7 +41,7 @@ typedef struct vbe_mode_t
     uint32_t off_screen_mem_size;
 
     uint8_t reserved1[206];
-}__attribute__((packed)) vbe_mode_t;
+} __attribute__ ((packed)) vbe_mode_t;
 
 void video_init();
 void video_putpixel(uint16_t, uint16_t, uint32_t);
