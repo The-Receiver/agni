@@ -1,10 +1,9 @@
 #ifndef PMM_H
 #define PMM_H
 
-#include <limits.h>
 #include <multiboot.h>
 #include <stddef.h>
-#include <stdint.h>
+#include <stddef.h>
 
 void pmm_init(multiboot_info_t *);
 void *pmm_alloc_page(void);

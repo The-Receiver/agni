@@ -11,7 +11,10 @@ void map_page(void *phys, void *virt, int user)
     uint32_t *page_directory;
     uint32_t *page_table;
 
-    asm volatile ("mov %0, cr3":"=a" (page_directory)::);
+    asm volatile (
+        "mov %%cr3, %0"
+        : "=a" (page_directory)
+    );
 
     if (page_directory[pd_index] & 0x1) {
         page_table =
@@ -39,7 +42,10 @@ void unmap_page(void *virt)
     uint32_t *page_directory;
     uint32_t *page_table;
 
-    asm volatile ("mov %0, cr3":"=a" (page_directory)::);
+    asm volatile (
+        "mov %%cr3, %0"
+        : "=a" (page_directory)
+    );
 
     page_table = (uint32_t *) page_directory[pd_index];
     page_table[pt_index] = 0;

@@ -43,7 +43,10 @@ void isr_handler(regs_t * r)
         exception_messages[r->int_no]);
     if (r->int_no == 0x0e) {
         size_t addr;
-        asm volatile ("pop %0":"=r" (addr)::);
+        asm volatile (
+            "pop %0"
+            :"=r" (addr)
+        );
         kprintf("Page fault at address %x \n", addr);
     }
     kputs("System halted!\n");

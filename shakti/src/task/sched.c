@@ -69,7 +69,10 @@ void sched_init(void)
     kmemcpy(processes[0].name, "shakti", 7);
     processes[0].free = 0;
 
-    asm volatile ("mov %0, cr3":"=a" (processes[0].cr3)::);
+    asm volatile (
+        "mov %%cr3, %0"
+        :"=a" (processes[0].cr3)
+    );
 
     processes[0].threads[0].free = -1;
 
@@ -146,7 +149,11 @@ void pit_handler(regs_t * r)
 
                 uint32_t pd = processes[i].cr3;
 
-                asm volatile ("mov eax, %0"::"r" (pd):);
+                asm volatile (
+                    "mov %0, %%eax"
+                    :
+                    :"r" (pd)
+                );
 
                 regs_t r;
                 r.eax = processes[i].threads[j].eax;
@@ -161,7 +168,11 @@ void pit_handler(regs_t * r)
                 r.ds = processes[i].threads[j].ds;
                 r.eflags = processes[i].threads[j].eflags;
 
-                asm volatile ("mov ebx, %0"::"r" (&r):);
+                asm volatile (
+                    "mov %0, %%ebx"
+                    :
+                    :"r" (&r)
+                );
 
                 context_switch();
             }
@@ -169,12 +180,12 @@ void pit_handler(regs_t * r)
     }
 }
 
-uint64_t pit_ticks()
+uint64_t pit_ticks(void)
 {
     return ticks;
 }
 
-uint64_t pit_secs()
+uint64_t pit_secs(void)
 {
     return seconds;
 }

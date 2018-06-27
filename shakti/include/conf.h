@@ -1,7 +1,7 @@
 #ifndef CONF_H
 #define CONF_H
 
-#include <stdint.h>
+#include <stddef.h>
 
 typedef struct {
     uint8_t key[16];

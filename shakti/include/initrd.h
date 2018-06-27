@@ -3,7 +3,7 @@
 
 #include <klib.h>
 #include <stddef.h>
-#include <stdint.h>
+#include <stddef.h>
 
 typedef struct {
     char name[100];

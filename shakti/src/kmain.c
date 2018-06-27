@@ -1,4 +1,3 @@
-#include <cpuid_kern.h>
 #include <idt.h>
 #include <initrd.h>
 #include <klib.h>
@@ -30,14 +29,15 @@ void kmain(multiboot_info_t * mboot)
     initrd_install(initrd_start);
     vfs_mount("initrd", 0);
 
-    char cpuname[12 * 4];
-    cpuid_get_name(cpuname);
-    kprintf("[boot] cpu: %s \n", cpuname);
     kprintf("[boot] mem: %u  megabytes of RAM\n",
         (mboot->mem_lower + mboot->mem_upper) / 1024);
+    
+    int handle = vfs_open("0:docs/welcome", 0);
+    if (handle < 0) {
+        kputs("[boot] opening file failed\n");
+    }
 
     schedule = 1;
 
-    for (;;)
-        asm volatile ("cli; hlt");
+    for (;;) asm volatile ("cli; hlt");
 }

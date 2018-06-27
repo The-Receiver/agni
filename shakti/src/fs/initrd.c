@@ -9,8 +9,6 @@
 static uint8_t *archive;
 static initrd_handle_t *handles;
 
-typedef signed long int ssize_t;
-
 static uint32_t atoi_octal(char *in)
 {
     uint32_t size = 0;
@@ -44,8 +42,8 @@ static int find_free_handle()
 
 int initrd_open(char *path, int perms)
 {
-    uint8_t *ptr = (uint8_t *) archive;
-    tarhdr_t *hdr = (tarhdr_t *) ptr;
+    uint8_t *ptr = (uint8_t *)archive;
+    tarhdr_t *hdr = (tarhdr_t *)ptr;
 
     while (kstrcmp(hdr->magic, "ustar") == 0) {
         hdr = (tarhdr_t *) ptr;
