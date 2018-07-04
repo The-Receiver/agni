@@ -32,11 +32,6 @@ void kmain(multiboot_info_t * mboot)
     kprintf("[boot] mem: %u  megabytes of RAM\n",
         (mboot->mem_lower + mboot->mem_upper) / 1024);
     
-    int handle = vfs_open("0:docs/welcome", 0);
-    if (handle < 0) {
-        kputs("[boot] opening file failed\n");
-    }
-
     schedule = 1;
 
     for (;;) asm volatile ("cli; hlt");

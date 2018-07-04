@@ -14,7 +14,7 @@ void sched_enable(void)
     schedule = 1;
 }
 
-int find_free_process()
+int find_free_process(void)
 {
     for (size_t i = 0; i < 512; i++) {
         if (processes[i].free) {

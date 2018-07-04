@@ -14,7 +14,7 @@ clean:
 	@rm -rf $(c_object_files) $(asm_object_files)
 
 $(target): $(c_object_files) $(asm_object_files)
-	@$(ld) -nostdlib -Tlinker.ld -n $(c_object_files) $(asm_object_files) -o $(target) -lgcc
+	@$(ld) -nostdlib -nostartfiles -Tlinker.ld -n $(c_object_files) $(asm_object_files) -o $(target) -lgcc
 
 %.o: %.asm
 	@nasm -Fdwarf -felf32 $(@:.o=.asm) -o $@

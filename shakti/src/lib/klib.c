@@ -86,6 +86,17 @@ void *kmemset(void *dest, int c, size_t n)
     return dest;
 }
 
+int kmemcmp(void* s1, void* s2, size_t n)
+{
+    const uint8_t *p1 = s1, *p2 = s2;
+    while(n--)
+        if( *p1 != *p2 )
+            return *p1 - *p2;
+        else
+            p1++, p2++;
+    return 0;
+}
+
 void *memset(void *dest, int c, size_t n)
 {
     return kmemset(dest, c, n);

@@ -14,6 +14,7 @@ char *kstrchr(char *, char);
 char *kstrrchr(char *, char);
 int kstrcmp(char *, char *);
 char *kstrstr(char *, char *);
+int kmemcmp(void *, void *, size_t);
 void *kmemcpy(void *, void *, size_t);
 void *kmemset(void *, int, size_t);
 
