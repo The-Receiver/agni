@@ -77,6 +77,24 @@ void *kmemcpy(void *dest, void *src, size_t n)
     return dest;
 }
 
+void *kmemmove(void *dest, void *src, size_t n)
+{
+    char *dest_m = (char *)dest;
+    char *src_m = (char *)src;
+    if (src > dest) {
+        return kmemcpy(dest, src, n);
+    } else {
+        for (size_t i = n; i > 0; i--) {
+            dest_m[i - 1] = src_m[i];
+        }
+    }
+}
+
+void *memmove(void *dest, void *src, size_t n)
+{
+    return kmemmove(dest, src, n);
+}
+
 void *kmemset(void *dest, int c, size_t n)
 {
     char *dest_m = (char *)dest;

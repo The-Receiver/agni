@@ -5,6 +5,7 @@
 #include <pit.h>
 #include <pmm.h>
 #include <vfs.h>
+#include <elf.h>
 #include <video.h>
 #include <vmm.h>
 
@@ -32,7 +33,14 @@ void kmain(multiboot_info_t * mboot)
     kprintf("[boot] mem: %u  megabytes of RAM\n",
         (mboot->mem_lower + mboot->mem_upper) / 1024);
     
+    kputs("[boot] testing elf loader...\n");
+    
+    elf_exec_t program = elf_exec("0:bin/first_program");
+    kprintf("[boot] program pd resides at %x \n", program.page_directory);
+    kprintf("[boot] program's entry is at virtual address %x \n", program.entry);
+    
     schedule = 1;
+
 
     for (;;) asm volatile ("cli; hlt");
 }

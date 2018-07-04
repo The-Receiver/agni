@@ -28,23 +28,23 @@
 
 /* ELF info header, for the user */
 typedef struct {
-    int type;
-    void *entry;
-    uint32_t *page_directory;
+    int status;
+    uint32_t entry;
+    uint32_t page_directory;
 } elf_exec_t; 
 
 /* Main file header */
 typedef struct {
     uint8_t magic[4];
-    uint8_t class;
+    uint8_t bits;
     uint8_t endianness;
     uint8_t version;
     uint8_t abi;
     uint8_t abiversion;
     uint8_t pad[7];
     uint16_t type;
-    uint16_t architecture;
-    uint32_t version_2;
+    uint16_t machine;
+    uint32_t version2;
     uint32_t entry;
     uint32_t phoff;
     uint32_t shoff;
@@ -56,7 +56,6 @@ typedef struct {
     uint16_t shnum;
     uint16_t shstrndx;
 } elf_fileheader_t;
-
 /* Program header */
 typedef struct {
     uint32_t type;
@@ -69,7 +68,6 @@ typedef struct {
     uint32_t align;
 } elf_programheader_t;
 
-/* Section header */
-
+elf_exec_t elf_exec(char *);
 
 #endif

@@ -44,7 +44,7 @@ void isr_handler(regs_t * r)
     if (r->int_no == 0x0e) {
         size_t addr;
         asm volatile (
-            "pop %0"
+            "mov %%cr2, %0"
             :"=r" (addr)
         );
         kprintf("Page fault at address %x \n", addr);
