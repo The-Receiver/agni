@@ -36,8 +36,12 @@ void kmain(multiboot_info_t * mboot)
     kputs("[boot] testing elf loader...\n");
     
     elf_exec_t *program = elf_exec("0:bin/first_program");
+    if (program == NULL) {
+        kputs("[boot] loading elf file failed\n");
+        for (;;) asm volatile("cli; hlt");
+    }
     kprintf("[boot] program pd resides at %x \n", program->page_directory);
-    kprintf("[boot] program entry is at virtual address %x  (in the target pd) \n", program->entry);
+    kprintf("[boot] program entry is at virtual address %x \n", program->entry);
     
     schedule = 1;
     vmm_free(program, 1);

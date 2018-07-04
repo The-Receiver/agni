@@ -29,8 +29,24 @@ elf_exec_t *elf_exec(char *path)
     if (header->machine != ARCH_I386) return NULL;
     
     uint32_t *pd = pmm_alloc(1);
+    uint32_t *pt = pmm_alloc(1);
     
     if (pd == NULL) return NULL; /* BIG BIG PROBLEM if it's null */
+    if (pt == NULL) return NULL; /* BIG BIG PROBLEM here as well */
+    
+    for (size_t i = 0; i < 1024 * 1024; i++) {
+        pt[i] = (i * 0x1000) | 0x03;
+    }
+    
+    for (size_t i = 0; i < 1024; i++) {
+        pd[i] = (uintptr_t) &pt[i * 1024] | 0x03;
+    }
+    
+    for (size_t i = 0; i < 4; i++)
+        pd[768 + i] = (uintptr_t) (&pt[i * 1024]) | 0x03;
+        
+    pmm_free(pt, 1);
+    
     elf_programheader_t *program_header_table = (elf_programheader_t *)((char *)header + header->phoff); 
     
     for (size_t i = 0; i < header->phnum; i++) {
@@ -46,6 +62,7 @@ elf_exec_t *elf_exec(char *path)
             if (status == -1) return NULL;
         }
     }
+    
     ret->entry = (uint32_t)header->entry;
     ret->page_directory = (uint32_t)pd;
     return ret;
