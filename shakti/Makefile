@@ -17,7 +17,7 @@ $(target): $(c_object_files) $(asm_object_files)
 	@$(ld) -nostdlib -nostartfiles -Tlinker.ld -n $(c_object_files) $(asm_object_files) -o $(target) -lgcc
 
 %.o: %.asm
-	@nasm -Fdwarf -felf32 $(@:.o=.asm) -o $@
+	@nasm -felf32 $(@:.o=.asm) -o $@
 
 %.o: %.c
-	@$(cc) -g -Wall -Wextra -O3 -I./include -c -nostdlib -fno-builtin -ffreestanding $(@:.o=.c) -o $@
+	@$(cc) -Wall -Wextra -O0 -I./include -c -nostdlib -fno-builtin -ffreestanding $(@:.o=.c) -o $@

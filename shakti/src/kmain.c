@@ -37,7 +37,7 @@ void kmain(multiboot_info_t * mboot)
     
     elf_exec_t program = elf_exec("0:bin/first_program");
     kprintf("[boot] program pd resides at %x \n", program.page_directory);
-    kprintf("[boot] program's entry is at virtual address %x \n", program.entry);
+    kprintf("[boot] program entry is at virtual address %x \n", program.entry);
     
     schedule = 1;
 

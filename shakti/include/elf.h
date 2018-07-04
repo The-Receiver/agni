@@ -26,9 +26,12 @@
 #define PT_LOPROC       0x70000000
 #define PT_HIPROC       0x7fffffff
 
+#define ABI_SYSV        0x00
+#define ARCH_I386            0x03
+
 /* ELF info header, for the user */
 typedef struct {
-    int status;
+    uint32_t status;
     uint32_t entry;
     uint32_t page_directory;
 } elf_exec_t; 
