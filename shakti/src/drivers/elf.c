@@ -18,6 +18,7 @@ elf_exec_t *elf_exec(char *path)
     if (file == NULL) return NULL;
     vfs_read(handle, file, ogsize);
     vmm_free(statbuf, 1);
+    vfs_close(handle);
     
     elf_fileheader_t *header = (elf_fileheader_t *)file;
     if (header->magic[0] != 0x7f
