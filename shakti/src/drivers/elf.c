@@ -33,10 +33,18 @@ elf_exec_t *elf_exec(char *path)
     if (pd == NULL) return NULL; /* BIG BIG PROBLEM if it's null */
     elf_programheader_t *program_header_table = (elf_programheader_t *)((char *)header + header->phoff); 
     
-    for (size_t i = 0; i < header->phnum /* hardcoded for now */; i++) {
+    for (size_t i = 0; i < header->phnum; i++) {
+        if (program_header_table[i].type != PT_LOAD) {
+            continue;
+        }
         kmemcpy((void *)program_header_table[i].paddr, (void *)((char *)header + program_header_table[i].offset), program_header_table[i].filesz);
-        int status = map_page(pd, (void *)program_header_table[i].paddr, (void *)program_header_table[i].vaddr, 0x07 /* User page */);
-        if (status == -1) return NULL;
+        
+        while (program_header_table[i].memsz % 0x100) program_header_table[i].memsz++;
+
+        for (size_t n = 0; n < program_header_table[i].memsz / 0x1000; n++) {
+            int status = map_page(pd, (void *)program_header_table[i].paddr + (n * 0x1000), (void *)program_header_table[i].vaddr + (n * 0x1000), 0x07 /* User page */);
+            if (status == -1) return NULL;
+        }
     }
     ret->entry = (uint32_t)header->entry;
     ret->page_directory = (uint32_t)pd;
