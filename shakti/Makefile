@@ -1,3 +1,4 @@
+as ?= nasm
 cc ?= i386-tcc
 ld ?= i386-elf-gcc
 target ?= ../bin/shakti.elf
@@ -17,7 +18,7 @@ $(target): $(c_object_files) $(asm_object_files)
 	@$(ld) -nostdlib -nostartfiles -Tlinker.ld -n $(c_object_files) $(asm_object_files) -o $(target) -lgcc
 
 %.o: %.asm
-	@nasm -felf32 $(@:.o=.asm) -o $@
+	@$(as) -felf $(@:.o=.asm) -o $@
 
 %.o: %.c
 	@$(cc) -Wall -Wextra -O0 -I./include -c -nostdlib -fno-builtin -ffreestanding $(@:.o=.c) -o $@
