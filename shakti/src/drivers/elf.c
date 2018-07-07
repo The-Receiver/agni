@@ -55,17 +55,17 @@ elf_exec_t *elf_exec(char *path)
             continue;
         }
         void *phys;
+        size_t n;
         while (program_header_table[i].memsz % 0x1000) program_header_table[i].memsz++;
-
-        for (size_t n = 0; n < program_header_table[i].memsz / 0x1000; n++) {
+        
+        for (n = 0; n < program_header_table[i].memsz / 0x1000; n++) {
             phys = pmm_alloc(1);
-            if (n == 0) {
-                kmemcpy(phys, ((char *)header + program_header_table[i].offset), program_header_table[i].filesz);
-            }
             if (phys == NULL) return NULL;
             int status = map_page(pd,  phys, (void *)program_header_table[i].vaddr + (n * 0x1000), 0x07 /* User page */);
             if (status == -1) return NULL;
         }
+        void *init_phys = (void *)(uintptr_t)(phys - (0x1000 * n));
+        kmemcpy(init_phys, (char *)header + program_header_table[i].offset, program_header_table[i].filesz);
     }
     
     ret->entry = (uint32_t)header->entry;
