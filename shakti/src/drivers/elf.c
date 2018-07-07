@@ -54,12 +54,16 @@ elf_exec_t *elf_exec(char *path)
         if (program_header_table[i].type != PT_LOAD) {
             continue;
         }
-        kmemcpy((void *)program_header_table[i].paddr, (void *)((char *)header + program_header_table[i].offset), program_header_table[i].filesz);
-        
-        while (program_header_table[i].memsz % 0x100) program_header_table[i].memsz++;
+        void *phys;
+        while (program_header_table[i].memsz % 0x1000) program_header_table[i].memsz++;
 
         for (size_t n = 0; n < program_header_table[i].memsz / 0x1000; n++) {
-            int status = map_page(pd, (void *)program_header_table[i].paddr + (n * 0x1000), (void *)program_header_table[i].vaddr + (n * 0x1000), 0x07 /* User page */);
+            phys = pmm_alloc(1);
+            if (n == 0) {
+                kmemcpy(phys, ((char *)header + program_header_table[i].offset), program_header_table[i].filesz);
+            }
+            if (phys == NULL) return NULL;
+            int status = map_page(pd,  phys, (void *)program_header_table[i].vaddr + (n * 0x1000), 0x07 /* User page */);
             if (status == -1) return NULL;
         }
     }
