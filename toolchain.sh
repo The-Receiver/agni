@@ -4,6 +4,8 @@ cd ~
 set -e
 set -x
 
+# Thanks to bauen1 for lending me this script and letting me modify it to fit my own needs
+
 BINUTILS_VERSION=2.30
 GCC_VERSION=7.3.0
 GRUB_VERSION=2.02
@@ -12,7 +14,7 @@ MUSL_VERSION=v1.1.19
 
 mkdir -p toolchain
 export PREFIX="$PWD/toolchain"
-# TODO: change TARGET to i686-myunix
+
 BINUTILS_VERSION=2.30
 GCC_VERSION=8.1.0
 TINYCC_TAG=release_0_9_27
