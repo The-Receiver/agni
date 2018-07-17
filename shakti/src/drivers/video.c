@@ -9,12 +9,12 @@ uint16_t width, height, pitch;
 static size_t x = 0, y = 0;
 extern uint8_t bitmap_font[16 * 256];
 
-static inline uint8_t vga_entry_colour(colour_t fg, colour_t bg)
+static uint8_t vga_entry_colour(colour_t fg, colour_t bg)
 {
     return fg | bg << 4;
 }
 
-static inline uint16_t vga_entry(uint8_t uc, uint8_t colour)
+static uint16_t vga_entry(uint8_t uc, uint8_t colour)
 {
     return (uint16_t) uc | (uint16_t) colour << 8;
 }
@@ -43,11 +43,12 @@ void update_cursor(int x, int y)
 
 void terminal_scrolldown()
 {
-    for (size_t index = (80 * 1); index < 80 * 25; index++) {
+    size_t index;
+    for (index = (80 * 1); index < 80 * 25; index++) {
         framebuffer[index - 80] = framebuffer[index];
     }
 
-    for (size_t index = 0; index < 80; index++) {
+    for (index = 0; index < 80; index++) {
         framebuffer[index + (80 - 1) * 80] =
             vga_entry(' ', vga_entry_colour(LGREY, BLACK));
     }

@@ -2,7 +2,7 @@
 #define IDT_H
 
 #include <klib.h>
-#include <stddef.h>
+#include <stdint.h>
 #include <stddef.h>
 
 typedef struct {
@@ -19,9 +19,9 @@ typedef struct {
 } __attribute((packed)) idtptr_t;
 
 #define interrupts_on()                                                        \
-  { asm volatile("sti"); }
+  { __asm__ volatile("sti"); }
 #define interrupts_off()                                                       \
-  { asm volatile("cli"); }
+  { __asm__ volatile("cli"); }
 
 void irq_init();
 void idt_init();

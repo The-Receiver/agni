@@ -3,7 +3,7 @@
 
 #include <idt.h>
 #include <klib.h>
-#include <stddef.h>
+#include <stdint.h>
 
 void sched_init(void);
 uint64_t pit_ticks();

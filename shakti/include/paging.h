@@ -2,7 +2,7 @@
 #define PAGING_H
 
 #include <stddef.h>
-#include <stddef.h>
+#include <stdint.h>
 
 #define LOAD_ADDRESS 0x00100000
 #define HIGHER_HALF_ADDRESS 0xC0100000

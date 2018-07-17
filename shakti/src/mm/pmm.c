@@ -6,7 +6,7 @@
 
 #define BM_FULL (32768)
 
-static volatile uint8_t bitmap[BM_FULL] __attribute__ ((aligned(PAGE_SIZE)));
+volatile uint8_t bitmap[BM_FULL] __attribute__ ((aligned(PAGE_SIZE)));
 
 static int bitmap_read(size_t i)
 {
@@ -30,7 +30,7 @@ static void bitmap_write(size_t i, int val)
 
 void pmm_init(multiboot_info_t * mboot)
 {
-    size_t mmap_len;
+    size_t mmap_len, i;
     multiboot_memory_map_t *mmap;
 
     if (mboot->flags & 0x1) {
@@ -41,16 +41,21 @@ void pmm_init(multiboot_info_t * mboot)
         for (;;) ;
     }
 
-    for (size_t i = 0; i < BM_FULL; i++) {
+    for (i = 0; i < BM_FULL; i++) {
         bitmap[i] = 0;
     }
-
+    
+    for (i = 0; i < 4; i++) {
+        bitmap[i] = 1;
+    }
+    
     bitmap[0] = 1;
 }
 
 void *pmm_alloc_page()
 {
-    for (size_t i = 0; i < BM_FULL; i++) {
+    size_t i;
+    for (i = 0; i < BM_FULL; i++) {
         if (!bitmap_read(i)) {
             bitmap_write(i, 1);
             return (void *)(KRNL_BASE + (i * PAGE_SIZE));
@@ -111,7 +116,8 @@ void pmm_free(void *ptr, size_t n)
 {
     size_t bit = ((size_t) (ptr - KRNL_BASE) / PAGE_SIZE);
 
-    for (size_t i = bit; i < (bit + n); i++) {
+    size_t i;
+    for (i = bit; i < (bit + n); i++) {
         bitmap_write(i, 0);
     }
 }

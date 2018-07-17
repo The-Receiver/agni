@@ -16,7 +16,8 @@ void sched_enable(void)
 
 int find_free_process(void)
 {
-    for (size_t i = 0; i < 512; i++) {
+    size_t i;
+    for (i = 0; i < 512; i++) {
         if (processes[i].free) {
             processes[i].free = 0;
             return i;
@@ -27,7 +28,8 @@ int find_free_process(void)
 
 int find_free_thread(int pid)
 {
-    for (size_t i = 0; i < 512; i++) {
+    size_t i;
+    for (i = 0; i < 512; i++) {
         if (processes[pid].threads[i].free) {
             processes[pid].threads[i].free = 0;
             return i;
@@ -52,7 +54,8 @@ void sched_init(void)
 
     processes = vmm_alloc(3, 0);
 
-    for (size_t i = 0; i < 512; i++) {
+    size_t i, j;
+    for (i = 0; i < 512; i++) {
         processes[i].free = 1;
         processes[i].threads = vmm_alloc(8, 0);
 
@@ -61,7 +64,7 @@ void sched_init(void)
             for (;;) ;
         }
 
-        for (size_t j = 0; j < 512; j++) {
+        for (j = 0; j < 512; j++) {
             processes[i].threads[j].free = 1;
         }
     }
@@ -69,7 +72,7 @@ void sched_init(void)
     kmemcpy(processes[0].name, "shakti", 7);
     processes[0].free = 0;
 
-    asm volatile (
+    __asm__ volatile (
         "mov %%cr3, %0"
         :"=a" (processes[0].cr3)
     );
@@ -133,14 +136,16 @@ void pit_handler(regs_t * r)
         return;
     }
     if (ticks % 10) {
-        for (size_t i = 0;; i++) {
+        size_t i;
+        for (i = 0;; i++) {
             if (i == 511)
                 i = 0;
 
             if (processes[i].free)
                 continue;
 
-            for (size_t j = 0; j < 512; j++) {
+            size_t j;
+            for (j = 0; j < 512; j++) {
                 if (processes[i].threads[j].free)
                     continue;
 
@@ -149,7 +154,7 @@ void pit_handler(regs_t * r)
 
                 uint32_t pd = processes[i].cr3;
 
-                asm volatile (
+                __asm__ volatile (
                     "mov %0, %%eax"
                     :
                     :"r" (pd)
@@ -168,7 +173,7 @@ void pit_handler(regs_t * r)
                 r.ds = processes[i].threads[j].ds;
                 r.eflags = processes[i].threads[j].eflags;
 
-                asm volatile (
+                __asm__ volatile (
                     "mov %0, %%ebx"
                     :
                     :"r" (&r)

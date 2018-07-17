@@ -6,8 +6,8 @@
 
 int conf_parse(char *path, conf_t * conf)
 {
-    int newlines = 0;
-    int original_i = 0;
+    size_t newlines = 0;
+    size_t original_i = 0;
     int handle = vfs_open(path, 0);
     if (handle == -1) {
         return -1;
@@ -25,14 +25,15 @@ int conf_parse(char *path, conf_t * conf)
         }
     }
 
+    size_t i, j;
     uintptr_t arith = (uintptr_t) filebuf;
-    for (int i = 0; i < newlines; filebuf++, arith++, original_i++) {
+    for (i = 0; i < newlines; filebuf++, arith++, original_i++) {
         if (*filebuf == '\n') {
             i++;
         }
         char key[16];
         int k, l;
-        for (int j = 0; j < 16; j++) {
+        for (j = 0; j < 16; j++) {
             char *ptr = (char *)(arith * i + j);
             if (*(ptr) == ':') {
                 k = j;
@@ -42,7 +43,7 @@ int conf_parse(char *path, conf_t * conf)
             key[j] = *(ptr);
         }
         char value[16];
-        for (int j = 0; j < 16; j++) {
+        for (j = 0; j < 16; j++) {
             char *ptr = (char *)(arith * i + j);
             if (*(ptr) == ';') {
                 l = j;

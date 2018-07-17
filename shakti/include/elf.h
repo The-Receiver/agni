@@ -32,6 +32,7 @@
 /* ELF info header, for the user */
 typedef struct {
     uint32_t entry;
+    uint32_t phys_entry;
     uint32_t page_directory;
 } elf_exec_t; 
 

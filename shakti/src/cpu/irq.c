@@ -68,7 +68,7 @@ void irq_init()
 
 void irq_handler(regs_t * r)
 {
-    asm volatile ("pusha");
+    __asm__ volatile ("pusha");
     void (*handler) (regs_t * r);
 
     handler = irq_routines[r->int_no - 32];
@@ -81,5 +81,5 @@ void irq_handler(regs_t * r)
     }
 
     outb(0x20, 0x20);
-    asm volatile ("popa");
+    __asm__ volatile ("popa");
 }

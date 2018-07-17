@@ -46,7 +46,8 @@ char *kstrstr(char *haystack, char *needle)
     size_t needle_len = kstrlen(needle);
     for (; attempts < 6000; haystack++, attempts++) {
         if (*haystack == *needle) {
-            for (size_t i = 0; i < needle_len; i++) {
+            size_t i;
+            for (i = 0; i < needle_len; i++) {
                 if (*(haystack + i) == needle[i]) {
                     j++;
                 }
@@ -69,9 +70,10 @@ int kstrcmp(char *a, char *b)
 
 void *kmemcpy(void *dest, void *src, size_t n)
 {
+    size_t i;
     char *dest_m = (char *)dest;
     char *src_m = (char *)src;
-    for (size_t i = 0; i < n; i++) {
+    for (i = 0; i < n; i++) {
         dest_m[i] = src_m[i];
     }
     return dest;
@@ -84,7 +86,8 @@ void *kmemmove(void *dest, void *src, size_t n)
     if (src > dest) {
         return kmemcpy(dest, src, n);
     } else {
-        for (size_t i = n; i > 0; i--) {
+        size_t i;
+        for (i = n; i > 0; i--) {
             dest_m[i - 1] = src_m[i];
         }
     }
@@ -98,7 +101,8 @@ void *memmove(void *dest, void *src, size_t n)
 void *kmemset(void *dest, int c, size_t n)
 {
     char *dest_m = (char *)dest;
-    for (size_t i = 0; i < n; i++) {
+    size_t i;
+    for (i = 0; i < n; i++) {
         dest_m[i] = c;
     }
     return dest;
@@ -176,13 +180,30 @@ void kputdec(uint64_t x)
     kputs(kstrrev(buf));
 }
 
+void outb(uint16_t port, uint8_t val)
+{
+    __asm__ volatile (
+        "outb %0, %1"
+        :
+        :"a" (val), "Nd"(port)
+    );
+}
+
+uint8_t inb(uint16_t port)
+{
+    uint8_t ret;
+    __asm__ volatile ("inb %1, %0":"=a" (ret):"Nd"(port));
+    return ret;
+}
+
+
 int katoi(char *buf)
 {
-    int n = 0;
+    int n, i = 0;
     if (kstrcmp(buf, "0") == 0) {
         return 0;
     }
-    for (int i = 0; buf[i] != 0; i++) {
+    for (i = 0; buf[i] != 0; i++) {
         int power = kpow(10, i);
         n += (power * (buf[i] - '0'));
     }

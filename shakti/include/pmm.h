@@ -3,7 +3,7 @@
 
 #include <multiboot.h>
 #include <stddef.h>
-#include <stddef.h>
+#include <stdint.h>
 
 void pmm_init(multiboot_info_t *);
 void *pmm_alloc_page(void);

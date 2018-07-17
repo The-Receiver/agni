@@ -2,7 +2,7 @@
 #define TAR_H
 
 #include <klib.h>
-#include <stddef.h>
+#include <stdint.h>
 #include <stddef.h>
 
 typedef struct {

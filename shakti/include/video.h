@@ -3,7 +3,7 @@
 
 #include <multiboot.h>
 #include <stddef.h>
-#include <stddef.h>
+#include <stdint.h>
 
 typedef struct vbe_mode_t {
     uint16_t attributes;

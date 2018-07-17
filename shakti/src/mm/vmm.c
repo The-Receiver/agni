@@ -19,7 +19,8 @@ int map_page(uint32_t *page_directory, void *phys, void *virt, int flags)
             return -1;
         }
 
-        for (size_t i = 0; i < 1024; i++) {
+        size_t i;
+        for (i = 0; i < 1024; i++) {
             page_table[i] = 0;
         }
 
@@ -54,12 +55,13 @@ void *vmm_alloc(size_t n, int user)
     }
     
     uint32_t *page_directory;
-    asm volatile (
+    __asm__ volatile (
         "mov %%cr3, %0"
         : "=a" (page_directory)
     );
 
-    for (size_t i = 0; i < n; i++) {
+    size_t i;
+    for (i = 0; i < n; i++) {
         void *phys_l = (void *)(uintptr_t) phys + (i * PAGE_SIZE);
         void *virt_l = phys_l + HIGHER_HALF_ADDRESS;
         map_page(page_directory, phys_l, virt_l, (user) ? 0x07 : 0x03);
@@ -70,18 +72,19 @@ void *vmm_alloc(size_t n, int user)
 
 void *vmm_realloc(void *ptr, size_t n, int user)
 {
+    size_t i;
     void *phys = pmm_realloc((ptr - HIGHER_HALF_ADDRESS), n);
     if (phys == NULL) {
         return NULL;
     }
     
     uint32_t *page_directory;
-    asm volatile (
+    __asm__ volatile (
         "mov %%cr3, %0"
         : "=a" (page_directory)
     );
 
-    for (size_t i = 0; i < n; i++) {
+    for (i = 0; i < n; i++) {
         void *phys_l = (void *)(uintptr_t) phys + (i * PAGE_SIZE);
         void *virt_l = phys_l + HIGHER_HALF_ADDRESS;
         map_page(page_directory, phys_l, virt_l, (user) ? 0x07 : 0x03);
@@ -92,12 +95,13 @@ void *vmm_realloc(void *ptr, size_t n, int user)
 
 void vmm_free(void *ptr, size_t n)
 {
+    size_t i;
     uint32_t *page_directory;
-    asm volatile (
+    __asm__ volatile (
         "mov %%cr3, %0"
         : "=a" (page_directory)
     );
-    for (size_t i = 0; i < n; i++) {
+    for (i = 0; i < n; i++) {
         unmap_page(page_directory, (void *)(uintptr_t) ptr + (i * PAGE_SIZE));
         pmm_free((void *)(uintptr_t) (ptr + (i * PAGE_SIZE)) -
              HIGHER_HALF_ADDRESS, 1);

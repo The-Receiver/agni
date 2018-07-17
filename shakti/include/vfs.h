@@ -2,7 +2,7 @@
 #define VFS_H
 
 #include <stddef.h>
-#include <stddef.h>
+#include <stdint.h>
 
 typedef struct {
     char name[32];

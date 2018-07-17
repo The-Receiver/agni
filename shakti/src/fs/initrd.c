@@ -24,15 +24,17 @@ static uint32_t atoi_octal(char *in)
 
 static void alloc_handles()
 {
+    size_t i;
     handles = vmm_alloc(1, 0);
-    for (size_t i = 0; i < 128; i++) {
+    for (i = 0; i < 128; i++) {
         handles[i].used = 0;
     }
 }
 
 static int find_free_handle()
 {
-    for (size_t i = 0; i < 128; i++) {
+    size_t i;
+    for (i = 0; i < 128; i++) {
         if (!handles[i].used) {
             return i;
         }

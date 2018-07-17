@@ -38,13 +38,13 @@ void kmain(multiboot_info_t * mboot)
     elf_exec_t *program = elf_exec("0:bin/first_program");
     if (program == NULL) {
         kputs("[boot] loading elf file failed\n");
-        for (;;) asm volatile("cli; hlt");
+        for (;;) __asm__ volatile("cli; hlt");
     }
     kprintf("[boot] program pd resides at %x \n", program->page_directory);
     kprintf("[boot] program entry is at virtual address %x \n", program->entry);
     
-    schedule = 1;
     vmm_free(program, 1);
+    
 
-    for (;;) asm volatile ("cli; hlt");
+    for (;;) __asm__ volatile ("cli; hlt");
 }

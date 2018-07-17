@@ -8,7 +8,8 @@ static vfs_mountpoint_t *mountpoints;
 
 static int find_free_fs()
 {
-    for (int i = 0; i < 64; i++) {
+    size_t i;
+    for (i = 0; i < 64; i++) {
         if (filesystems[i].open == NULL) {
             return i;
         }
@@ -18,7 +19,8 @@ static int find_free_fs()
 
 static int find_free_handle()
 {
-    for (int i = 0; i < 512; i++) {
+    size_t i;
+    for (i = 0; i < 512; i++) {
         if (!handles[i].used) {
             handles[i].used = 1;
             return i;
@@ -29,7 +31,8 @@ static int find_free_handle()
 
 static int find_free_mountpoint()
 {
-    for (int i = 0; i < 64; i++) {
+    size_t i;
+    for (i = 0; i < 64; i++) {
         if (mountpoints[i].dev == -1) {
             return i;
         }
@@ -37,18 +40,19 @@ static int find_free_mountpoint()
     return -1;
 }
 
-void vfs_init()
+void vfs_init(void)
 {
+    size_t i;
     handles = vmm_alloc(1, 0);
     mountpoints = vmm_alloc(1, 0);
     filesystems = vmm_alloc(1, 0);
-    for (size_t i = 0; i < 64; i++) {
+    for (i = 0; i < 64; i++) {
         filesystems[i].open = NULL;
     }
-    for (size_t i = 0; i < 64; i++) {
+    for (i = 0; i < 64; i++) {
         mountpoints[i].dev = -1;
     }
-    for (size_t i = 0; i < 512; i++) {
+    for (i = 0; i < 512; i++) {
         handles[i].used = 0;
     }
 }
@@ -77,7 +81,8 @@ int vfs_install_fs(char *name, int (*open) (char *, int), int (*close) (int),
 
 int vfs_mount(char *filesystem, int dev)
 {
-    for (int i = 0; i < 64; i++) {
+    size_t i;
+    for (i = 0; i < 64; i++) {
         if (kstrcmp(filesystems[i].name, filesystem) == 0) {
             int point = find_free_mountpoint();
             if (point == -1) {
