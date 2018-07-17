@@ -1,3 +1,4 @@
 agni.kdev4
 .kdev4/*
 ./**/*.o
+./**/.DS_Store
